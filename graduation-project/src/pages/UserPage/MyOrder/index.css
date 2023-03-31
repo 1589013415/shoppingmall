@@ -1,0 +1,6 @@
+.div {
+    background-image: url(/public/images/white3.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}

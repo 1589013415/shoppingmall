@@ -1,0 +1,17 @@
+127.0.0.1 - - [31/Mar/2023:14:26:53 +0800] "GET /glutstore/api/commodity/isTokenExist HTTP/1.1" 200 77 http-bio-8000-exec-3 340
+127.0.0.1 - - [31/Mar/2023:14:26:53 +0800] "GET /glutstore/api/commodity/isTokenExist HTTP/1.1" 200 77 http-bio-8000-exec-4 4
+127.0.0.1 - - [31/Mar/2023:14:26:53 +0800] "GET /glutstore/user/getAllCommodities/all HTTP/1.1" 200 6216 http-bio-8000-exec-1 441
+127.0.0.1 - - [31/Mar/2023:14:26:53 +0800] "GET /glutstore/user/getAllCommodities/all HTTP/1.1" 200 6216 http-bio-8000-exec-5 19
+127.0.0.1 - - [31/Mar/2023:14:26:53 +0800] "GET /glutstore/user/getcommodityclassify HTTP/1.1" 200 395 http-bio-8000-exec-2 807
+127.0.0.1 - - [31/Mar/2023:14:26:54 +0800] "GET /glutstore/user/getcommodityclassify HTTP/1.1" 200 395 http-bio-8000-exec-6 3
+127.0.0.1 - - [31/Mar/2023:14:27:00 +0800] "GET /glutstore/api/commodity/isTokenExist HTTP/1.1" 200 77 http-bio-8000-exec-7 2
+127.0.0.1 - - [31/Mar/2023:14:27:14 +0800] "POST /glutstore/user/login HTTP/1.1" 200 110 http-bio-8000-exec-8 28
+127.0.0.1 - - [31/Mar/2023:14:27:17 +0800] "POST /glutstore/user/login HTTP/1.1" 200 104 http-bio-8000-exec-9 4
+127.0.0.1 - - [31/Mar/2023:14:27:23 +0800] "GET /glutstore/user/getAllCommodities/all HTTP/1.1" 200 6216 http-bio-8000-exec-10 10
+127.0.0.1 - - [31/Mar/2023:14:27:24 +0800] "GET /glutstore/api/commodity/isTokenExist HTTP/1.1" 200 77 http-bio-8000-exec-3 3
+127.0.0.1 - - [31/Mar/2023:14:27:24 +0800] "GET /glutstore/user/getcommodityclassify HTTP/1.1" 200 395 http-bio-8000-exec-4 4
+127.0.0.1 - - [31/Mar/2023:14:27:24 +0800] "GET /glutstore/user/getAllCommodities/all HTTP/1.1" 200 6216 http-bio-8000-exec-1 6
+127.0.0.1 - - [31/Mar/2023:14:27:24 +0800] "GET /glutstore/api/commodity/isTokenExist HTTP/1.1" 200 77 http-bio-8000-exec-5 2
+127.0.0.1 - - [31/Mar/2023:14:27:24 +0800] "GET /glutstore/user/getcommodityclassify HTTP/1.1" 200 395 http-bio-8000-exec-2 4
+127.0.0.1 - - [31/Mar/2023:14:27:27 +0800] "GET /glutstore/user/getAllCommodities/books HTTP/1.1" 200 788 http-bio-8000-exec-6 6
+127.0.0.1 - - [31/Mar/2023:14:27:27 +0800] "GET /glutstore/user/getAllCommodities/tablesAndChars HTTP/1.1" 200 1036 http-bio-8000-exec-7 5
