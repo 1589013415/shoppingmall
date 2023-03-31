@@ -24,9 +24,6 @@ public class OrderServiceTest {
     CommodityMapper commodityMapper;
     @Test
     public void createOder(){
-//        User userByUserId = userMapper.getUserByUserId(new BigInteger("1"));
-//        Commodity commodityByCommodityId = commodityMapper.getCommodityByCommodityId(new BigInteger("1"));
-//        boolean order = orderService.createOrder(userByUserId, commodityByCommodityId);
-//        System.out.println(order);
+        System.out.println("测试git提交");
     }
 }
