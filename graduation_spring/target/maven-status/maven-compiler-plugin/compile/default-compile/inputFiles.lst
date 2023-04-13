@@ -10,7 +10,6 @@ D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\controller
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\service\OrderService.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\service\impl\UserMsgServiceImpl.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\aop\ControllerAop.java
-D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\pojo\AliPay.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\mapper\ClassifyMapper.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\pojo\UserCommodityFront.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\service\impl\OrderServiceImpl.java
@@ -31,7 +30,6 @@ D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\controller
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\service\impl\CommodityServiceImpl.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\service\UserService.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\controller\interceptor\UserInterceptor.java
-D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\controller\AliPayController.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\mapper\CommodityMapper.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\mapper\OrderMapper.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\pojo\ResetForm.java
@@ -40,7 +38,6 @@ D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\service\Us
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\pojo\Order.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\pojo\UserUpdateEmail.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\util\CommodityStateUitl.java
-D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\config\AliPay\AliPayConfig.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\pojo\Commodity.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\util\JwtUtil.java
 D:\ZgraduationImage\workspace\graduation_spring\src\main\java\cn\glut\config\JdbcConfig.java

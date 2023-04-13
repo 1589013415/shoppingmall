@@ -1,7 +1,6 @@
 package cn.glut.mapper;
 
 import cn.glut.pojo.Order;
-import com.alipay.api.domain.OdAnalysisLineInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
