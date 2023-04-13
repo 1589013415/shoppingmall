@@ -1,29 +1,36 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
 import cookies from "js-cookie"
-import { Card, Form, Input, Button, Space, message } from "antd"
+import { Card, Form, Input, Button, Space, message, Modal } from "antd"
 import axios from "axios";
 import "./index.css"
+const { confirm } = Modal;
 class UserLoginCard extends Component {
     formRef = React.createRef();
     onFinish = async (event) => {
         try {
             await axios.post(`/user/login`, event).then(
                 response => {
+                    const { state } = response.data
                     if (response.data.success) {
                         // let cookieSurvivalTime = new Date(new Date().getTime() + 24 * 3600 * 1000);
                         cookies.set('token', response.data.resultData.token, { expires: 1 });
                         this.props.history.push("/userhome")
                         this.FormRest();
                     } else {
-                        message.error({
-                            content: response.data.msg,
-                            className: 'custom-class', style: {
-                                marginTop: '20vh',
-                                fontSize: "110%",
-                                color: "red"
-                            },
-                        }, 0.8)
+                        if (3 === state) {//1:用户激活; //2用户账号被禁用；//3：用户已登录
+                            this.showConfirm(event)
+                        } else if (0 === state || 2 === state) {
+                            message.error({
+                                content: response.data.msg,
+                                className: 'custom-class', style: {
+                                    marginTop: '20vh',
+                                    fontSize: "110%",
+                                    color: "red"
+                                },
+                            }, 0.8)
+                        }
+
                     }
                 }
             )
@@ -39,6 +46,51 @@ class UserLoginCard extends Component {
     }
     onPressEnterAccount = () => {
         this.passwordInput.focus();
+    }
+    //重复登录showConfirm
+    showConfirm = (event) => {
+        debugger
+        confirm({
+            title: '用户已登录，是否重复登录',
+            okText: '确定',
+            okType: 'danger',
+            cancelText: '取消',
+            onOk: async () => {
+                try {
+                    await axios.post(`/user/relogin`, event).then(
+                        response => {
+                            const { state } = response.data
+                            if (response.data.success) {
+                                // let cookieSurvivalTime = new Date(new Date().getTime() + 24 * 3600 * 1000);
+                                cookies.set('token', response.data.resultData.token, { expires: 1 });
+                                this.props.history.push("/userhome")
+                                this.FormRest();
+                            } else {
+                                if (3 === state) {//1:用户激活; //2用户账号被禁用；//3：用户已登录
+                                    debugger
+                                    this.showConfirm(event)
+                                } else if (0 === state || 2 === state) {
+                                    message.error({
+                                        content: response.data.msg,
+                                        className: 'custom-class', style: {
+                                            marginTop: '20vh',
+                                            fontSize: "110%",
+                                            color: "red"
+                                        },
+                                    }, 0.8)
+                                }
+
+                            }
+                        }
+                    )
+                } catch {
+                    console.log("提交数据失败，未获得后端返回的数据");
+                }
+            },
+            onCancel() {
+
+            },
+        });
     }
     render() {
         const { isResetPassword } = this.props;
@@ -131,6 +183,7 @@ class UserLoginCard extends Component {
                         </Space>
                     </Form.Item>
                 </Form>
+
             </Card>
         )
     }
