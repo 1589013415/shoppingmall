@@ -10,8 +10,8 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Classify {
-   private BigInteger id;
-   private String classname;
-   private int state;
-   private String key;
+    private BigInteger id;
+    private String classname;
+    private int state;
+    private String key;
 }

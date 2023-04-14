@@ -2,7 +2,6 @@ package cn.glut.mapper;
 
 import cn.glut.pojo.Commodity;
 import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 

@@ -23,23 +23,23 @@ public class UserCommodityFront extends Commodity {
     private String stateMsg;
     private List<String> imagePath;
 
-    public void setStateMsg(int state,String failBecause) {
-        switch (state){
+    public void setStateMsg(int state, String failBecause) {
+        switch (state) {
             case 0:
-                this.stateMsg="正在审核中";
+                this.stateMsg = "正在审核中";
                 break;
             case 1:
-                this.stateMsg="挂售中";
+                this.stateMsg = "挂售中";
                 break;
             case 2:
-                this.stateMsg="审核失败";
+                this.stateMsg = "审核失败";
                 this.setFailbecause(failBecause);
                 break;
             case 3:
-                this.stateMsg="商品正被支付锁定中";
+                this.stateMsg = "商品正被支付锁定中";
                 break;
             case 4:
-                this.stateMsg="已出售";
+                this.stateMsg = "已出售";
                 break;
         }
     }

@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRegister extends User{
+public class UserRegister extends User {
     private String verifyCode;
 }

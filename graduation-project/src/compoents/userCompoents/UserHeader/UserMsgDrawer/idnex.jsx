@@ -83,7 +83,6 @@ export class UserMsgDrawer extends Component {
                     <Descriptions.Item label="金额" span={2}>
                         {<Row>
                             <Col span={12}><span style={{ fontSize: '120%' }}>{userMsg.money || "0"}</span></Col>
-                            <Col offset={9} span={2}><Button type='primary'>提现</Button></Col>
                         </Row>}
                     </Descriptions.Item>
                 </Descriptions>

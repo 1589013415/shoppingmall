@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
+import PubSub from 'pubsub-js'
 import { Row, Col, Card, Image, Descriptions, Button, Empty, message, Modal } from "antd"
 import { ExclamationCircleFilled } from '@ant-design/icons';
 import "./index.css"
@@ -10,7 +11,9 @@ class CommodityBugPage extends Component {
     state = {
         userMsg: {},
         commodityMsg: {},
-        isBuyCommidiy: false
+        isBuyCommidiy: false,
+        isLoading: false,
+        loadingTop: "",
     }
     getCommodityMsg = () => {
         const { commodityid } = this.props.match.params;
@@ -29,28 +32,27 @@ class CommodityBugPage extends Component {
         }
     }
     buyCommodity = () => {
-        const { commodityid } = this.props.match.params
+        this.setState({ isBuyCommidiy: true })
+
+    }
+    handleBuyOk = () => {//商品弹窗购买按钮
         const { commodityMsg, userMsg, isBuyCommidiy } = this.state;
-        axios.post(`/api/order/createCommodity`, { commodityid }, { headers: { token: cookies.get("token") } }).then(
+        this.setState({ isBuyCommidiy: false })
+        PubSub.publish("isloading", { isLoading: true, loadingTop: "12%" });
+        axios.post(`/api/commodity/buyCommodity`, { commodityId: commodityMsg.commodityid, sellerId: userMsg.userid }, { headers: { token: cookies.get("token") } }).then(
             respoense => {
+                const { success, msg } = respoense.data
                 if (respoense.data.success) {
-                    let order = respoense.data.resultData.order;
-                    console.log(order)
-                    confirm({
-                        title: '你确定要购买该商品吗？',
-                        icon: <ExclamationCircleFilled />,
-                        content: '请尽快支付',
-                        onOk: () => {
-                            window.open(`http://localhost:8000/glutstore/alipay/pay?subject=${commodityMsg.name}&traceNo=${order.orderid}&totalAmount=${order.price}`);
-                        },
-                        onCancel: () => { },
-                    });
+                    message.success(msg)
                 } else {
-                    message.warning(respoense.data.msg)
-                    return;
+                    message.warning(msg)
                 }
+                PubSub.publish("isloading", { isLoading: false, loadingTop: "" });
             }
         )
+    }
+    handleBuyCancel = () => {//商品取消按钮
+        this.setState({ isBuyCommidiy: false })
     }
     componentDidMount() {
         this.getCommodityMsg();
@@ -226,6 +228,19 @@ class CommodityBugPage extends Component {
                     }
                 </Row >
                 <div style={{ height: "20px" }}></div>
+                <Modal title="购买商品信息" open={isBuyCommidiy} onOk={this.handleBuyOk} onCancel={this.handleBuyCancel}
+                    footer={[
+                        <Button key="back" onClick={this.handleBuyCancel}>
+                            取消支付
+                        </Button>,
+                        <Button key="submit" type="primary" onClick={this.handleBuyOk}>
+                            确认支付
+                        </Button>,
+                    ]}>
+                    <p><span style={{ fontSize: "20px" }}>商品名：{commodityMsg.name}</span></p>
+                    <p><span style={{ fontSize: "20px", color: "red" }}>价格：{commodityMsg.price}</span></p>
+                    <p><span style={{ fontSize: "20px" }}>卖家电话：{userMsg.photo}</span></p>
+                </Modal>
             </div >
         )
     }
