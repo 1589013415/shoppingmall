@@ -1,6 +1,7 @@
 package cn.glut.controller;
 
 import cn.glut.pojo.*;
+import cn.glut.service.BuyCommodityService;
 import cn.glut.service.CommodityService;
 import cn.glut.service.UserService;
 import cn.glut.util.JwtRedisUtil;
@@ -27,6 +28,8 @@ public class UserCommodityController {
     JwtRedisUtil jwtRedisUtil;
     @Autowired
     RedisTemplate redisTemplate;
+    @Autowired
+    BuyCommodityService buyCommodityService;
     @PostMapping("/addcommodity")
     public ResultMsg addCommodity(UserCommodityFront userCommodityFront, @RequestHeader String token) throws IOException {
         User userByToken = jwtRedisUtil.getUserByToken(token);
@@ -134,4 +137,10 @@ public class UserCommodityController {
         }
         return new ResultMsg(0,"商品获得失败",false,commodityAndUserMsgMap);
     }
+    @PostMapping("/buyCommodity")
+    public ResultMsg buyCommodity(@RequestBody BuyCommodityMsg buyCommodityMsg,@RequestHeader String token){
+        User buyUser = jwtRedisUtil.getUserByToken(token);
+        return buyCommodityService.buyCommodity(buyCommodityMsg,buyUser);
+    }
+
 }

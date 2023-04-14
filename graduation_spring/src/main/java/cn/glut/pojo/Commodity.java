@@ -16,9 +16,13 @@ public class Commodity {
     private String commodityname;
     private String image;
     private String detail;
-    private int price;
-    private int state;
-    private int ispay;
+    private double price;
+    /**
+     * state状态信息
+     *
+     */
+    private int state;//0：审核；1：挂售中
+    private int ispay;//0：未支付；1：已支付
     private String failbecause;
 
 }

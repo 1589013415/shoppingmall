@@ -17,7 +17,7 @@ public class Order {
     private BigInteger userplayid;
     private BigInteger sellerid;
     private BigInteger commodityid;
-    private int price;
+    private double price;
     private int payment;
     private int paystate;
     private String paytime;

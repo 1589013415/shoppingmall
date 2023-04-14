@@ -322,6 +322,7 @@ public class CommodityServiceImpl implements CommodityService {
         while (iterator.hasNext()){
             Commodity commodity = iterator.next();
             if(commodity.getState()!=1) continue;
+            if(commodity.getPrice()==1) continue;
             UserCommodityFront userCommodityFront = new UserCommodityFront();
             userCommodityFront.setCommodityid(commodity.getCommodityid());
             userCommodityFront.setUserid(commodity.getUserid());

@@ -18,7 +18,7 @@ public class UserCommodityFront extends Commodity {
     private String description;
     private String key;
     private String classifyName;
-    private int price;
+    private double price;
     private int state;
     private String stateMsg;
     private List<String> imagePath;
