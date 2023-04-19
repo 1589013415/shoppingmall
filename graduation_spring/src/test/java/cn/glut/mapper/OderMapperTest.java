@@ -9,11 +9,10 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.math.BigInteger;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.UUID;
+import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = SpringConfig.class)
@@ -42,5 +41,10 @@ public class OderMapperTest {
         order.setPayment(0);
         order.setPaystate(1);
         orderMapper.createOrder(order);
+    }
+    @Test
+    public void getOrderById(){
+        List<Order> oderBySellerId = orderMapper.getOderBySellerId(new BigInteger("2"));
+        System.out.println(oderBySellerId);
     }
 }

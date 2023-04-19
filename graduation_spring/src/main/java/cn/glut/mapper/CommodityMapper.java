@@ -1,9 +1,7 @@
 package cn.glut.mapper;
 
 import cn.glut.pojo.Commodity;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -20,7 +18,8 @@ public interface CommodityMapper {
 
     @Select("select *from commodity where commodityname like concat('%',#{searchValue},'%') or detail like concat('%',#{searchValue},'%')")
     public List<Commodity> getCommoditySearch(String searchValue);
-    @Update("insert into commodity(commodityid,userid,classifyid,commodityname,image,detail,price) " +
+    @Options(useGeneratedKeys = true, keyProperty = "commodityid", keyColumn = "commodityid")
+    @Insert("insert into commodity(commodityid,userid,classifyid,commodityname,image,detail,price) " +
     "values (#{commodityid},#{userid},#{classifyid},#{commodityname},#{image},#{detail},#{price})")
     public void addCommodity(Commodity commodity);
 
