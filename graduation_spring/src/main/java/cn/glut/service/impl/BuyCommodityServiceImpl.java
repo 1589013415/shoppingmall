@@ -46,7 +46,7 @@ public class BuyCommodityServiceImpl implements BuyCommodityService {
             resultMsg.setMsg("你不能购自己的商品");
             return resultMsg;
         }
-        if(commodity.getState()==1&&commodity.getIspay()==1){
+        if(commodity.getIspay()==1){
             resultMsg.setState(1);
             resultMsg.setMsg("商品已出售");
             return resultMsg;
@@ -69,7 +69,7 @@ public class BuyCommodityServiceImpl implements BuyCommodityService {
             buyer.setMoney(buyerBalance);
             seller.setMoney(sellerBalance);
             commodity.setIspay(1);
-            commodity.setState(4);
+            commodity.setState(3);//支付中
             commodityMapper.updateCommodity(commodity);
             userMsgMapper.updateUserMsg(seller);
             userMsgMapper.updateUserMsg(buyer);

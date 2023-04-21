@@ -2,6 +2,7 @@ package cn.glut.service;
 
 import cn.glut.config.SpringConfig;
 import cn.glut.mapper.CommodityMapper;
+import cn.glut.mapper.OrderMapper;
 import cn.glut.mapper.UserMapper;
 import cn.glut.pojo.Commodity;
 import cn.glut.pojo.Order;
@@ -21,6 +22,8 @@ public class OrderServiceTest {
     @Autowired
     OrderService orderService;
     @Autowired
+    OrderMapper orderMapper;
+    @Autowired
     UserMapper userMapper;
     @Autowired
     CommodityMapper commodityMapper;
@@ -32,5 +35,11 @@ public class OrderServiceTest {
     public void getOrders(){
         List<Order> orderListBySellerId = orderService.getOrderListBySellerId(new BigInteger("2"));
         System.out.println(orderListBySellerId);
+    }
+    @Test
+    public void testIsReturn(){
+        List<Order> orderListByBuyerId = orderService.getOrderListByBuyerId(new BigInteger("1"));
+        System.out.println(orderListByBuyerId);
+
     }
 }

@@ -36,7 +36,7 @@ public class UserCommodityFront extends Commodity {
                 this.setFailbecause(failBecause);
                 break;
             case 3:
-                this.stateMsg = "商品正被支付锁定中";
+                this.stateMsg = "商品正在出售中";
                 break;
             case 4:
                 this.stateMsg = "已出售";

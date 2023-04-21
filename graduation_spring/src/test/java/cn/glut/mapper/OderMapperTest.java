@@ -38,7 +38,8 @@ public class OderMapperTest {
         order.setSellerid(sellerid);
         order.setCommodityid(commodityid);
         order.setPrice(1);
-        order.setPayment(0);
+        order.setDeletemarkbuyer(false);
+        order.setDeletemarkseller(false);
         order.setPaystate(1);
         orderMapper.createOrder(order);
     }

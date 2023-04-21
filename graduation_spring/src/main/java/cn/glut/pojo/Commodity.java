@@ -17,7 +17,7 @@ public class Commodity {
     private String image;
     private String detail;
     private double price;
-    private int state;//0：审核；1：挂售中
+    private int state;//0：审核；1：挂售中；2：审核失败 3：商品正在出售中 ，4:已出售
     private int ispay;//0：未支付；1：已支付
     private String failbecause;
 

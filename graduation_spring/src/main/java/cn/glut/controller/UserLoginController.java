@@ -97,8 +97,8 @@ public class UserLoginController {
     public ResultMsg exitLogin(@RequestHeader String token) {
         ResultMsg resultMsg = new ResultMsg();
         User userByToken = jwtRedisUtil.getUserByToken(token);
-        userByToken.setIsLogin(0);
         if (jwtRedisUtil.isExistToken(token)) {
+            userByToken.setIsLogin(0);
             redisTemplate.delete("userid" + userByToken.getUserId());
             userService.updateUser(userByToken);
             resultMsg.setState(200);
@@ -106,7 +106,7 @@ public class UserLoginController {
             resultMsg.setMsg("退出成功");
         } else {
             resultMsg.setState(0);
-            resultMsg.setMsg("无效token");
+            resultMsg.setMsg("异常退出");
         }
         return resultMsg;
     }

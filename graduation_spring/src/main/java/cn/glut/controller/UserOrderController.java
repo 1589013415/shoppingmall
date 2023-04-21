@@ -1,9 +1,6 @@
 package cn.glut.controller;
 
-import cn.glut.pojo.Commodity;
-import cn.glut.pojo.Order;
-import cn.glut.pojo.ResultMsg;
-import cn.glut.pojo.User;
+import cn.glut.pojo.*;
 import cn.glut.service.CommodityService;
 import cn.glut.service.OrderService;
 import cn.glut.util.JwtRedisUtil;
@@ -59,4 +56,41 @@ public class UserOrderController {
             return resultMsg;
         }
     }
+    @PostMapping("/buyerreceipt")
+    public ResultMsg buyerReceipt(OrderFornt orderFornt){
+        try {
+            orderService.buyerReceipt(orderFornt.getOrderid());
+            return new ResultMsg(200,"收货成功",true,null);
+        } catch (Exception e) {
+            return new ResultMsg(0,e.getMessage(),false,null);
+        }
+    }
+    @PostMapping("/refund")
+    public ResultMsg refund(OrderFornt orderFornt){
+        try {
+            orderService.refund(orderFornt.getOrderid());
+            return new ResultMsg(200,"退款操作成功，等待卖家同意退款，如果由问题，请联系客服",true,null);
+        } catch (Exception e) {
+            return new ResultMsg(0,e.getMessage(),false,null);
+        }
+    }
+    @PostMapping("/deletebuyer")
+    public ResultMsg deleteOrder(OrderFornt orderFornt){
+        try {
+            orderService.deleteOrderBuyer(orderFornt.getOrderid());
+            return new ResultMsg(200,"删除订单成功",true,null);
+        } catch (Exception e) {
+            return new ResultMsg(0,e.getMessage(),false,null);
+        }
+    }
+    @PostMapping("/sendGoods")
+    public ResultMsg sendGoods(OrderFornt orderFornt){
+        try {
+            orderService.sellerSend(orderFornt.getOrderid());
+            return new ResultMsg(200,"等待买家确认收到货物",true,null);
+        } catch (Exception e) {
+            return new ResultMsg(0,e.getMessage(),false,null);
+        }
+    }
+
 }

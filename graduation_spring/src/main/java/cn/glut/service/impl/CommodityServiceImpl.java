@@ -261,6 +261,10 @@ public class CommodityServiceImpl implements CommodityService {
         commodity.setDetail(userCommodityFront.getDescription());
         commodity.setClassifyid(classifyId);
         commodity.setPrice(userCommodityFront.getPrice());
+        if(commodity.getIspay()==1){
+            System.out.println("修改失败");
+            return false;
+        }
         try {
             commodityMapper.updateCommodity(commodity);
             if(deleteImages(commodity.getUserid(), commodity.getCommodityid())){
@@ -280,6 +284,10 @@ public class CommodityServiceImpl implements CommodityService {
         Commodity commodityByCommodityId = commodityMapper.getCommodityByCommodityId(commodityId);
         if(commodityByCommodityId==null){
             System.out.println("要删除的商品不存在");
+            return false;
+        }
+        if(commodityByCommodityId.getIspay()==1){
+            System.out.println("该商品已被付款");
             return false;
         }
         String imagePath = commodityByCommodityId.getImage().replace("http://localhost:8080/glut","D:/ZgraduationImage");
@@ -321,8 +329,8 @@ public class CommodityServiceImpl implements CommodityService {
         ArrayList<UserCommodityFront> commodities = new ArrayList<>();
         while (iterator.hasNext()){
             Commodity commodity = iterator.next();
-            if(commodity.getState()!=1) continue;
-            if(commodity.getPrice()==1) continue;
+            if(commodity.getState()!=1) continue;//不是挂售中的跳过
+            if(commodity.getIspay()==1) continue;//已付款跳过
             UserCommodityFront userCommodityFront = new UserCommodityFront();
             userCommodityFront.setCommodityid(commodity.getCommodityid());
             userCommodityFront.setUserid(commodity.getUserid());

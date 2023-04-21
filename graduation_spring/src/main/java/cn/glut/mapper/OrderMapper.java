@@ -9,18 +9,22 @@ import java.math.BigInteger;
 import java.util.List;
 
 public interface OrderMapper {
-    @Insert("insert `order` (orderid,orderstate,createtime,userplayid,sellerid,commodityid,commodityname,price,payment,paystate,paytime," +
-            "sellername,buyername) " +
-            "values (#{orderid},#{orderstate},#{createtime},#{userplayid},#{sellerid},#{commodityid},#{commodityname},#{price},#{payment}," +
-            "#{paystate},#{paytime},#{sellername},#{buyername})")
+    @Insert("insert `order` (orderid,orderstate,createtime,userplayid,sellerid,commodityid,commodityname,price,paystate," +
+            "sellername,buyername,finishtime,deletemarkbuyer,deletemarkseller,buyerok,sellerok) " +
+            "values (#{orderid},#{orderstate},#{createtime},#{userplayid},#{sellerid},#{commodityid},#{commodityname},#{price}," +
+            "#{paystate},#{sellername},#{buyername},#{finishtime},#{deletemarkbuyer},#{deletemarkseller},#{buyerok},#{sellerok})")
     public void createOrder(Order order);
 
-    @Select("select *from `order` wherer orderid=#{orderId}")
+    @Select("select *from `order` where orderid=#{orderId}")
     public Order getOrderByOrderId(String orderId);
     @Select ("select *from `order` where userplayid=#{userplayId}")
     public List<Order> getOderByUserplayId(BigInteger userplayId);
     @Select ("select *from `order` where sellerid=#{sellerId}")
     public List<Order> getOderBySellerId(BigInteger sellerId);
-    @Update("update `order` set orderid=#{orderid},orderstate=#{orderstate},createtime=#{createtime},userplayid=#{userplayid},sellerid=#{sellerid},commodityid=#{commodityid},price=#{price},payment=#{payment},paystate=#{paystate},paytime=#{paytime}")
+    @Update("update `order` set orderid=#{orderid},orderstate=#{orderstate}," +
+            "createtime=#{createtime},userplayid=#{userplayid},sellerid=#{sellerid}," +
+            "commodityid=#{commodityid},price=#{price},paystate=#{paystate}," +
+            "sellername=#{sellername},buyername=#{buyername},finishtime=#{finishtime}," +
+            "deletemarkbuyer=#{deletemarkbuyer},deletemarkseller=#{deletemarkseller},buyerok=#{buyerok},sellerok=#{sellerok}")
     public void updateOrder(Order order);
 }

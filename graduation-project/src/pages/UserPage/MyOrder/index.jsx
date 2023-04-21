@@ -1,34 +1,12 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
-import { Breadcrumb, Row, Col, Card, Table, Tabs, Button, Space, Empty, Pagination, Modal, Drawer } from 'antd';
-import { BankTwoTone, ShopTwoTone, ContainerTwoTone } from '@ant-design/icons';
+import { Breadcrumb, Row, Col, Card, Table, Tabs, Button, Space, message, Modal } from 'antd';
+import { BankTwoTone, ShopTwoTone, ContainerTwoTone, ExclamationCircleFilled } from '@ant-design/icons';
 import axios from 'axios';
 import cookie from 'js-cookie';
 import "./index.css"
 const { TabPane } = Tabs;
-const data = [
-    {
-        key: '1',
-        name: 'John Brown',
-        age: 32,
-        address: 'New York No. 1 Lake Park',
-        tags: ['nice', 'developer'],
-    },
-    {
-        key: '2',
-        name: 'Jim Green',
-        age: 42,
-        address: 'London No. 1 Lake Park',
-        tags: ['loser'],
-    },
-    {
-        key: '3',
-        name: 'Joe Black',
-        age: 32,
-        address: 'Sidney No. 1 Lake Park',
-        tags: ['cool', 'teacher'],
-    },
-];
+const { confirm } = Modal;
 const routes = [
     {
         path: '/userhome/usercontent',
@@ -105,7 +83,124 @@ export class MyOreder extends Component {
         console.log(key);
     }
     //获得订单数据
-    getUserOrder = () => {
+    getUserOrder = async () => {
+        let token = cookie.get("token")
+        await axios.get(`/api/order/getOrderData`, { headers: { token } }).then(
+            respones => {
+                const { success, msg, resultData } = respones.data
+                const { orderListBuyer, orderListSeller } = resultData
+                if (success) {
+                    this.setState({ buyOrderDate: orderListBuyer, sellOrderDate: orderListSeller })
+                } else {
+                    message.error({
+                        content: msg,
+                        className: 'custom-class', style: {
+                            marginTop: '20vh',
+                            fontSize: "110%",
+                            color: "red"
+                        },
+                    }, 0.8)
+                }
+            }
+        )
+    }
+    //确认收货
+    receipt = async (record) => {
+        let token = cookie.get("token")
+        await axios.post(`/api/order/buyerreceipt`, record, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
+            respones => {
+                const { success, msg } = respones.data
+                if (success) {
+                    this.getUserOrder();
+                } else {
+                    message.error({
+                        content: msg,
+                        className: 'custom-class', style: {
+                            marginTop: '20vh',
+                            fontSize: "110%",
+                            color: "red"
+                        },
+                    }, 0.8)
+                }
+            }
+        )
+    }
+    //已发货
+    sendGoods = async (record) => {
+        let token = cookie.get("token")
+        await axios.post(`/api/order/sendGoods`, record, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
+            respones => {
+                const { success, msg } = respones.data
+                if (success) {
+                    message.success(msg)
+                    this.getUserOrder();
+                } else {
+                    message.error({
+                        content: msg,
+                        className: 'custom-class', style: {
+                            marginTop: '20vh',
+                            fontSize: "110%",
+                            color: "red"
+                        },
+                    }, 0.8)
+                }
+            }
+        )
+    }
+    //退款
+    refund = async (record) => {
+        let token = cookie.get("token")
+        await axios.post(`/api/order/refund`, record, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
+            respones => {
+                const { success, msg } = respones.data
+                if (success) {
+                    this.getUserOrder();
+                } else {
+                    message.error({
+                        content: msg,
+                        className: 'custom-class', style: {
+                            marginTop: '20vh',
+                            fontSize: "110%",
+                            color: "red"
+                        },
+                    }, 0.8)
+                }
+            }
+        )
+    }
+    //删除订单
+    deleteOrderBuyer = async (record) => {
+        confirm({
+            title: '删除',
+            icon: <ExclamationCircleFilled />,
+            content: "是否删除订单",
+            okText: '确认删除',
+            okType: 'danger',
+            cancelText: '取消',
+            onOk: async () => {
+                let token = cookie.get("token")
+                await axios.post(`/api/order/deletebuyer`, record, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
+                    respones => {
+                        const { success, msg } = respones.data
+                        if (success) {
+                            message.success("删除成功")
+                            this.getUserOrder();
+                        } else {
+                            message.error({
+                                content: msg,
+                                className: 'custom-class', style: {
+                                    marginTop: '20vh',
+                                    fontSize: "110%",
+                                    color: "red"
+                                },
+                            }, 0.8)
+                        }
+                    }
+                )
+            },
+            onCancel() {
+            },
+        });
 
     }
     componentDidMount() {
@@ -136,16 +231,38 @@ export class MyOreder extends Component {
             },
             {
                 title: '订单状态',
-                dataIndex: 'orderstate',
+                dataIndex: 'stateMsg',
             },
             {
                 title: '操作',
                 key: 'action',
                 render: (text, record) => (
-                    <Space>
-                        <Button style={{ background: "#FFE78F" }}>确认收货</Button>
-                        <Button style={{ background: "#ff02005c" }}>删除订单</Button>
-                    </Space>
+                    <div>
+                        {
+                            record.paystate === 0 ?//送货中
+                                record.buyerok ?//用户是否点过确认收货
+                                    <div>
+                                        {record.canReturn ?
+                                            <Space><Button onClick={() => { this.refund(record) }} style={{ background: "#FFE78F" }}>退款</Button><Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button></Space>
+                                            : <Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button>}
+                                    </div>
+                                    :
+                                    <Space>
+                                        <Button onClick={() => { this.receipt(record) }} style={{ background: "#FFE78F" }}>确认收货</Button>
+                                        <Button onClick={() => { this.refund(record) }} style={{ background: "#ff02005c" }}>退款</Button>
+                                    </Space>
+                                :
+                                record.paystate === 1 ?//已完成
+                                    <div>
+                                        {record.canReturn ?
+                                            <Space><Button onClick={() => { this.refund(record) }} style={{ background: "#FFE78F" }}>退款</Button><Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button></Space>
+                                            : <Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button>}
+                                    </div>
+                                    :
+                                    record.paystate === 2 ?//退款中
+                                        <span>退款中</span> : null
+                        }
+                    </div>
                 ),
             },
         ];
@@ -172,16 +289,39 @@ export class MyOreder extends Component {
             },
             {
                 title: '订单状态',
-                dataIndex: 'orderstate',
+                dataIndex: 'stateMsg',
+            },
+            {
+                title: '完成时间',
+                dataIndex: 'finishtime',
             },
             {
                 title: '操作',
                 key: 'action',
                 render: (text, record) => (
-                    <Space>
-                        <Button style={{ background: "#FFE78F" }}>已送出</Button>
-                        <Button style={{ background: "#ff02005c" }}>删除订单</Button>
-                    </Space>
+                    <div>
+                        {
+                            record.paystate === 0 ?//送货中
+                                <Space>
+                                    {
+                                        record.sellerok && !record.buyerok ? <span>等待买家确认收货</span> :
+                                            <Button onClick={() => { this.sendGoods(record) }} style={{ background: "#FFE78F" }}>已送货</Button>
+                                    }
+                                </Space>
+                                :
+                                record.paystate === 1 ?//已完成
+                                    <div>
+                                        {record.canReturn ?
+                                            <Space><span>商品包退中无法删除订单</span><Button disabled style={{ background: "#ff02005c" }}>删除订单</Button></Space>
+                                            : <Button style={{ background: "#ff02005c" }}>删除订单</Button>}
+                                    </div>
+                                    :
+                                    record.paystate === 2 ?//退款中
+                                        <Button style={{ background: "#FFE78F" }} >确认退款</Button> : null
+
+                        }
+                    </div>
+
                 ),
             },
         ];
