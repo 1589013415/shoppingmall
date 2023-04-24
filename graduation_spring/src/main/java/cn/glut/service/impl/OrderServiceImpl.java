@@ -3,19 +3,22 @@ package cn.glut.service.impl;
 import cn.glut.mapper.CommodityMapper;
 import cn.glut.mapper.OrderMapper;
 import cn.glut.mapper.UserMsgMapper;
-import cn.glut.pojo.Commodity;
-import cn.glut.pojo.Order;
-import cn.glut.pojo.User;
-import cn.glut.pojo.UserMsg;
+import cn.glut.pojo.*;
+import cn.glut.service.CommodityService;
 import cn.glut.service.OrderService;
+import cn.glut.util.RedisUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +30,10 @@ public class OrderServiceImpl implements OrderService {
     CommodityMapper commodityMapper;
     @Autowired
     UserMsgMapper userMsgMapper;
+    @Autowired
+    RedisTemplate redisTemplate;
+    @Autowired
+    CommodityService commodityService;
     @Override
     public Order createOrder(User user,Commodity commodity) {
         if(user==null||commodity==null)return null;
@@ -99,7 +106,6 @@ public class OrderServiceImpl implements OrderService {
         order.setBuyerok(true);
         if(order.isSellerok()){
             order.setPaystate(1);//完成
-            long timestamp = System.currentTimeMillis();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createTime = simpleDateFormat.format(new Date());
             order.setFinishtime(createTime);
@@ -115,7 +121,6 @@ public class OrderServiceImpl implements OrderService {
         order.setSellerok(true);
         if(order.isBuyerok()){
             order.setPaystate(1);//完成
-            long timestamp = System.currentTimeMillis();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createTime = simpleDateFormat.format(new Date());
             order.setFinishtime(createTime);
@@ -130,6 +135,41 @@ public class OrderServiceImpl implements OrderService {
             order.setPaystate(2);
             orderMapper.updateOrder(order);
             return true;
+    }
+
+    @Override
+    public boolean confirmRefund(String orderId) throws Exception {
+        Order order = orderMapper.getOrderByOrderId(orderId);
+        order.setPaystate(3);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String createTime = simpleDateFormat.format(new Date());
+        order.setFinishtime(createTime);
+        UserMsg buyerMsg = userMsgMapper.getUserMsg(order.getUserplayid());
+        UserMsg sellerMsg = userMsgMapper.getUserMsg(order.getSellerid());
+        Commodity commodity = commodityMapper.getCommodityByCommodityId(order.getCommodityid());
+        commodity.setState(1);
+        commodity.setIspay(0);
+        double price = order.getPrice();
+        DecimalFormat df =new DecimalFormat("#.00");
+        BigDecimal p = new BigDecimal(df.format(price));
+        BigDecimal buyerMoney = new BigDecimal(df.format(buyerMsg.getMoney()));
+        BigDecimal sellerMoney = new BigDecimal(df.format(sellerMsg.getMoney()));
+        double buyerBalance = buyerMoney.add(p).doubleValue();
+        double sellerBalance=sellerMoney.subtract(p).doubleValue();
+        if(sellerBalance>0){
+            buyerMsg.setMoney(buyerBalance);
+            sellerMsg.setMoney(sellerBalance);
+            userMsgMapper.updateUserMsg(buyerMsg);
+            userMsgMapper.updateUserMsg(sellerMsg);
+            orderMapper.updateOrder(order);
+            commodityMapper.updateCommodity(commodity);
+            clearCommodityCache();
+        }else {
+            throw new Exception("你的账户余额不足，无法确认退款");
+        }
+        order.setPaystate(1);
+
+        return false;
     }
 
     @Override
@@ -161,5 +201,14 @@ public class OrderServiceImpl implements OrderService {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+    private void clearCommodityCache(){
+        List<Classify> classify = commodityService.getClassify();
+        Iterator<Classify> iterator = classify.iterator();
+        while (iterator.hasNext()){
+            Classify classifyObj = iterator.next();
+            redisTemplate.delete("commoditiesList"+classifyObj.getKey());
+        }
+        redisTemplate.delete("commoditiesListall");
     }
 }

@@ -104,35 +104,13 @@ export class MyOreder extends Component {
             }
         )
     }
-    //确认收货
-    receipt = async (record) => {
+    //确认收货||已发货
+    receipt = async (record, type) => {
         let token = cookie.get("token")
-        await axios.post(`/api/order/buyerreceipt`, record, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
+        await axios.post(`/api/order/receipt`, { ...record, type }, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
             respones => {
                 const { success, msg } = respones.data
                 if (success) {
-                    this.getUserOrder();
-                } else {
-                    message.error({
-                        content: msg,
-                        className: 'custom-class', style: {
-                            marginTop: '20vh',
-                            fontSize: "110%",
-                            color: "red"
-                        },
-                    }, 0.8)
-                }
-            }
-        )
-    }
-    //已发货
-    sendGoods = async (record) => {
-        let token = cookie.get("token")
-        await axios.post(`/api/order/sendGoods`, record, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
-            respones => {
-                const { success, msg } = respones.data
-                if (success) {
-                    message.success(msg)
                     this.getUserOrder();
                 } else {
                     message.error({
@@ -148,9 +126,9 @@ export class MyOreder extends Component {
         )
     }
     //退款
-    refund = async (record) => {
+    refund = async (record, type) => {
         let token = cookie.get("token")
-        await axios.post(`/api/order/refund`, record, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
+        await axios.post(`/api/order/refund`, { ...record, type }, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
             respones => {
                 const { success, msg } = respones.data
                 if (success) {
@@ -243,24 +221,29 @@ export class MyOreder extends Component {
                                 record.buyerok ?//用户是否点过确认收货
                                     <div>
                                         {record.canReturn ?
-                                            <Space><Button onClick={() => { this.refund(record) }} style={{ background: "#FFE78F" }}>退款</Button><Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button></Space>
+                                            <Space><Button onClick={() => { this.refund(record, "buyer") }} style={{ background: "#FFE78F" }}>退款</Button>
+                                                <Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button></Space>
                                             : <Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button>}
                                     </div>
                                     :
                                     <Space>
-                                        <Button onClick={() => { this.receipt(record) }} style={{ background: "#FFE78F" }}>确认收货</Button>
-                                        <Button onClick={() => { this.refund(record) }} style={{ background: "#ff02005c" }}>退款</Button>
+                                        <Button onClick={() => { this.receipt(record, "buyer") }} style={{ background: "#FFE78F" }}>确认收货</Button>
+                                        <Button onClick={() => { this.refund(record, "buyer") }} style={{ background: "#ff02005c" }}>退款</Button>
                                     </Space>
                                 :
                                 record.paystate === 1 ?//已完成
                                     <div>
                                         {record.canReturn ?
-                                            <Space><Button onClick={() => { this.refund(record) }} style={{ background: "#FFE78F" }}>退款</Button><Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button></Space>
+                                            <Space><Button onClick={() => { this.refund(record, "buyer") }} style={{ background: "#FFE78F" }}>退款</Button>
+                                                <Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button></Space>
                                             : <Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button>}
                                     </div>
                                     :
                                     record.paystate === 2 ?//退款中
-                                        <span>退款中</span> : null
+                                        <span>退款中</span>
+                                        :
+                                        record.paystate === 3 ?//退款已完成
+                                            <Space><Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button></Space> : null
                         }
                     </div>
                 ),
@@ -305,7 +288,7 @@ export class MyOreder extends Component {
                                 <Space>
                                     {
                                         record.sellerok && !record.buyerok ? <span>等待买家确认收货</span> :
-                                            <Button onClick={() => { this.sendGoods(record) }} style={{ background: "#FFE78F" }}>已送货</Button>
+                                            <Button onClick={() => { this.receipt(record, "seller") }} style={{ background: "#FFE78F" }}>已送货</Button>
                                     }
                                 </Space>
                                 :
@@ -317,7 +300,11 @@ export class MyOreder extends Component {
                                     </div>
                                     :
                                     record.paystate === 2 ?//退款中
-                                        <Button style={{ background: "#FFE78F" }} >确认退款</Button> : null
+                                        <Button onClick={() => { this.refund(record, "seller") }} style={{ background: "#FFE78F" }} >确认退款</Button>
+                                        :
+                                        record.paystate === 3 ?//退款已完成
+                                            <Space><Button style={{ background: "#ff02005c" }}>删除订单</Button></Space> : null
+
 
                         }
                     </div>

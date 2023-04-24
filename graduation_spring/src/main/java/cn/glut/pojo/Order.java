@@ -42,6 +42,8 @@ public class Order {
             case 2:
                 msg="退款中";
                 break;
+            case 3:
+                msg="退款已完成";
         }
         this.stateMsg = msg;
     }

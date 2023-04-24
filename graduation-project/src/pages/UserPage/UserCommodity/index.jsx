@@ -57,7 +57,12 @@ export class UserCommodity extends Component {
         let token = cookie.get("token")
         await axios.get(`/api/commodity/getCommoditysByUserid/${pageNum}/${pageSize}`, { headers: { token } }).then(
             respones => {
-                this.setState({ userCommodityData: respones.data.resultData.userCommodity });
+                const { userCommodity } = respones.data.resultData
+                if (userCommodity.length === 0 || userCommodity === undefined) {
+                    this.resetPageNum();
+                } else {
+                    this.setState({ userCommodityData: userCommodity });
+                }
             }
         )
     }
@@ -68,6 +73,11 @@ export class UserCommodity extends Component {
                 this.setState({ userCommodityTotal: respones.data.resultData.total });
             }
         )
+    }
+    //当删除的商品是当前界面最后一个商品，重置页数
+    resetPageNum = () => {
+        this.setState({ pageNum: 1 })
+        this.getUserCommoditys();
     }
     onShowSizeChange = async (pageNum, pageSize) => {
         this.setState({ pageSize })

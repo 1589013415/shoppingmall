@@ -21,10 +21,11 @@ public interface OrderMapper {
     public List<Order> getOderByUserplayId(BigInteger userplayId);
     @Select ("select *from `order` where sellerid=#{sellerId}")
     public List<Order> getOderBySellerId(BigInteger sellerId);
-    @Update("update `order` set orderid=#{orderid},orderstate=#{orderstate}," +
+    @Update("update `order` set orderstate=#{orderstate}," +
             "createtime=#{createtime},userplayid=#{userplayid},sellerid=#{sellerid}," +
             "commodityid=#{commodityid},price=#{price},paystate=#{paystate}," +
             "sellername=#{sellername},buyername=#{buyername},finishtime=#{finishtime}," +
-            "deletemarkbuyer=#{deletemarkbuyer},deletemarkseller=#{deletemarkseller},buyerok=#{buyerok},sellerok=#{sellerok}")
+            "deletemarkbuyer=#{deletemarkbuyer},deletemarkseller=#{deletemarkseller},buyerok=#{buyerok},sellerok=#{sellerok} " +
+            "where orderid=#{orderid}")
     public void updateOrder(Order order);
 }

@@ -26,4 +26,5 @@ public class OrderFornt {
     private String buyerok;
     private String sellerok;
     private String stateMsg;
+    private String type;
 }

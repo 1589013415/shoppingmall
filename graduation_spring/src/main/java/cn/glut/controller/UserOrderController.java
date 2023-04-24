@@ -56,20 +56,36 @@ public class UserOrderController {
             return resultMsg;
         }
     }
-    @PostMapping("/buyerreceipt")
+    @PostMapping("/receipt")
     public ResultMsg buyerReceipt(OrderFornt orderFornt){
+        String type = orderFornt.getType();
         try {
-            orderService.buyerReceipt(orderFornt.getOrderid());
-            return new ResultMsg(200,"收货成功",true,null);
+            if(type.equals("buyer")){
+                orderService.buyerReceipt(orderFornt.getOrderid());
+                return new ResultMsg(200,"收货成功",true,null);
+            }else if(type.equals("seller")){
+                orderService.sellerSend(orderFornt.getOrderid());
+                return new ResultMsg(200,"等待买家确认收到货物",true,null);
+            }else {
+                throw new Exception("请求异常，不符合规定");
+            }
         } catch (Exception e) {
             return new ResultMsg(0,e.getMessage(),false,null);
         }
     }
     @PostMapping("/refund")
     public ResultMsg refund(OrderFornt orderFornt){
+        String type = orderFornt.getType();
         try {
-            orderService.refund(orderFornt.getOrderid());
-            return new ResultMsg(200,"退款操作成功，等待卖家同意退款，如果由问题，请联系客服",true,null);
+            if(type.equals("buyer")){
+                orderService.refund(orderFornt.getOrderid());
+                return new ResultMsg(200,"退款操作成功，等待卖家同意退款，如果由问题，请联系客服",true,null);
+            }else if(type.equals("seller")){
+                orderService.confirmRefund(orderFornt.getOrderid());
+                return new ResultMsg(200,"退款成功",true,null);
+            }else {
+                throw new Exception("请求异常，不符合规定");
+            }
         } catch (Exception e) {
             return new ResultMsg(0,e.getMessage(),false,null);
         }
@@ -79,15 +95,6 @@ public class UserOrderController {
         try {
             orderService.deleteOrderBuyer(orderFornt.getOrderid());
             return new ResultMsg(200,"删除订单成功",true,null);
-        } catch (Exception e) {
-            return new ResultMsg(0,e.getMessage(),false,null);
-        }
-    }
-    @PostMapping("/sendGoods")
-    public ResultMsg sendGoods(OrderFornt orderFornt){
-        try {
-            orderService.sellerSend(orderFornt.getOrderid());
-            return new ResultMsg(200,"等待买家确认收到货物",true,null);
         } catch (Exception e) {
             return new ResultMsg(0,e.getMessage(),false,null);
         }

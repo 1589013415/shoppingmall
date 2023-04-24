@@ -1,10 +1,14 @@
 package cn.glut.util;
 
+import cn.glut.pojo.Classify;
+import cn.glut.service.CommodityService;
+import cn.glut.service.impl.CommodityServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class RedisUtil{
     @Autowired
     RedisTemplate redisTemplate;
+    //1.定义切入点
     public void setValue(String key,String value){
         redisTemplate.opsForValue().set(key,value);
     }
