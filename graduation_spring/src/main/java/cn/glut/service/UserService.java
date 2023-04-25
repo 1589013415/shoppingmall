@@ -1,5 +1,6 @@
 package cn.glut.service;
 
+import cn.glut.pojo.ResultMsg;
 import cn.glut.pojo.User;
 import cn.glut.pojo.UserMsg;
 
@@ -43,5 +44,6 @@ public interface UserService {
 
     public UserMsg getUserMsg(BigInteger userid);
     public boolean addUserMsg(UserMsg userMsg);
+    public ResultMsg userLoginManage(String userName, String userPassword,boolean isRelogin);
 
 }

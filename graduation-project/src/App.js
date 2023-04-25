@@ -13,7 +13,7 @@ export class App extends Component {
           <Route path="/userhome" component={UserHome} />
           <Route path="/userlogin" component={UserLoginPage} />
           <Route path="/register" component={Register} />
-          <Route path="managehome" component={ManageHome} />
+          <Route path="/manage/login" component={ManageHome} />
           <Redirect to="/userhome" />
         </Switch>
       </Router>
