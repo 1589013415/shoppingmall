@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { withRouter } from "react-router-dom"
 import PubSub from 'pubsub-js'
 import cookies from 'js-cookie';
 import axios from "axios";
@@ -13,11 +14,14 @@ export class ManagePage extends Component {
         this.token = PubSub.subscribe("isLoginManage", (_, data) => {
             this.setState(data)
         })
-        // this.isTokenExist();
+        this.isTokenExist();
     }
     //在组件销毁前，取消订阅
     componentWillUnmount() {
         PubSub.unsubscribe(this.token)
+    }
+    historyPush = (path) => {
+        this.props.history.push(path)
     }
     isTokenExist = () => {
         let token = cookies.get("tokenmanage")
@@ -37,10 +41,10 @@ export class ManagePage extends Component {
         const { isLogin } = this.state
         return (
             <div>
-                {isLogin ? <ManageHome /> : <LoginPageM />}
+                {isLogin ? <ManageHome historyPush={this.historyPush} /> : <LoginPageM />}
             </div>
         )
     }
 }
 
-export default ManagePage
+export default withRouter(ManagePage)
