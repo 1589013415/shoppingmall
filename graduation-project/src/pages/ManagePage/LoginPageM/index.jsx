@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Route, Switch, withRouter } from "react-router-dom"
+import { withRouter } from "react-router-dom"
 import PubSub from 'pubsub-js'
 import cookies from "js-cookie"
 import axios from "axios";
@@ -92,6 +92,12 @@ export class LoginPageM extends Component {
     render() {
         return (
             <div className='userLoginBackground'>
+                <div style={{ height: '12%' }}></div>
+                <div style={{ textAlign: "center" }}>
+                    <span style={{
+                        color: 'rgb(13, 131, 235)', fontSize: '400%', fontFamily: "宋体"
+                    }}>桂工二手商城后台管理系统</span>
+                </div>
                 <div className='userLoginDIV'>
                     <Card
                         title="登录"

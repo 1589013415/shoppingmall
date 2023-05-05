@@ -4,7 +4,7 @@ import PubSub from 'pubsub-js'
 import cookies from 'js-cookie';
 import axios from "axios";
 import LoginPageM from "../LoginPageM/index"
-import ManageHome from '../ManageHome/idnex';
+import ManageHome from '../ManageHome/index';
 export class ManagePage extends Component {
     state = {
         isLogin: false
@@ -13,6 +13,7 @@ export class ManagePage extends Component {
         //用token接住，挂载在当前实例上，token用于后面的取消订阅
         this.token = PubSub.subscribe("isLoginManage", (_, data) => {
             this.setState(data)
+            this.props.history.push("/manage/page")
         })
         this.isTokenExist();
     }

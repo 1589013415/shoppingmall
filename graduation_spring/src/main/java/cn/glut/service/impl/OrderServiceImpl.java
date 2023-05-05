@@ -34,17 +34,18 @@ public class OrderServiceImpl implements OrderService {
     RedisTemplate redisTemplate;
     @Autowired
     CommodityService commodityService;
+
     @Override
-    public Order createOrder(User user,Commodity commodity) {
-        if(user==null||commodity==null)return null;
-        BigInteger userPayId=user.getUserId();
-        BigInteger sellerId=commodity.getUserid();
+    public Order createOrder(User user, Commodity commodity) {
+        if (user == null || commodity == null) return null;
+        BigInteger userPayId = user.getUserId();
+        BigInteger sellerId = commodity.getUserid();
         String buyerName = userMsgMapper.getUserMsg(userPayId).getNickname();
         String sellerName = userMsgMapper.getUserMsg(sellerId).getNickname();
-        BigInteger commodityId=commodity.getCommodityid();
+        BigInteger commodityId = commodity.getCommodityid();
         String commodityname = commodity.getCommodityname();
         long timestamp = System.currentTimeMillis();
-        String orderId=userPayId+""+commodityId+""+sellerId+""+timestamp;
+        String orderId = userPayId + "" + commodityId + "" + sellerId + "" + timestamp;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String createTime = simpleDateFormat.format(new Date());
         try {
@@ -66,7 +67,7 @@ public class OrderServiceImpl implements OrderService {
             order.setFinishtime("0000-00-00 00:00:00");
             orderMapper.createOrder(order);
             return order;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -76,9 +77,9 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getOrderListByBuyerId(BigInteger id) {
         ArrayList<Order> orders = new ArrayList<>();
         List<Order> baseOrders = orderMapper.getOderByUserplayId(id);
-        for (Order order:baseOrders
-             ) {
-            if(order.isDeletemarkbuyer())continue;
+        for (Order order : baseOrders
+        ) {
+            if (order.isDeletemarkbuyer()) continue;
             order.setStateMsg(order.getPaystate());
             order.setCanReturn(isReturn(order));
             orders.add(order);
@@ -90,9 +91,9 @@ public class OrderServiceImpl implements OrderService {
     public List<Order> getOrderListBySellerId(BigInteger id) {
         ArrayList<Order> orders = new ArrayList<>();
         List<Order> baseOrders = orderMapper.getOderBySellerId(id);
-        for (Order order:baseOrders
+        for (Order order : baseOrders
         ) {
-            if(order.isDeletemarkseller())continue;
+            if (order.isDeletemarkseller()) continue;
             order.setStateMsg(order.getPaystate());
             order.setCanReturn(isReturn(order));
             orders.add(order);
@@ -104,12 +105,16 @@ public class OrderServiceImpl implements OrderService {
     public boolean buyerReceipt(String orderId) throws Exception {
         Order order = orderMapper.getOrderByOrderId(orderId);
         order.setBuyerok(true);
-        if(order.isSellerok()){
+        if (order.isSellerok()) {
             order.setPaystate(1);//完成
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createTime = simpleDateFormat.format(new Date());
             order.setFinishtime(createTime);
-        };
+            Commodity commodity = commodityMapper.getCommodityByCommodityId(order.getCommodityid());
+            commodity.setState(4);
+            commodityMapper.updateCommodity(commodity);
+        }
+        ;
 
         orderMapper.updateOrder(order);
         return true;
@@ -119,12 +124,16 @@ public class OrderServiceImpl implements OrderService {
     public boolean sellerSend(String orderId) throws Exception {
         Order order = orderMapper.getOrderByOrderId(orderId);
         order.setSellerok(true);
-        if(order.isBuyerok()){
+        if (order.isBuyerok()) {
             order.setPaystate(1);//完成
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createTime = simpleDateFormat.format(new Date());
             order.setFinishtime(createTime);
-        };
+            Commodity commodity = commodityMapper.getCommodityByCommodityId(order.getCommodityid());
+            commodity.setState(4);
+            commodityMapper.updateCommodity(commodity);
+        }
+        ;
         orderMapper.updateOrder(order);
         return true;
     }
@@ -132,9 +141,12 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean refund(String orderId) throws Exception {
         Order order = orderMapper.getOrderByOrderId(orderId);
-            order.setPaystate(2);
-            orderMapper.updateOrder(order);
-            return true;
+        Commodity commodity = commodityMapper.getCommodityByCommodityId(order.getCommodityid());
+        commodity.setState(3);
+        commodityMapper.updateCommodity(commodity);
+        order.setPaystate(2);
+        orderMapper.updateOrder(order);
+        return true;
     }
 
     @Override
@@ -150,13 +162,13 @@ public class OrderServiceImpl implements OrderService {
         commodity.setState(1);
         commodity.setIspay(0);
         double price = order.getPrice();
-        DecimalFormat df =new DecimalFormat("#.00");
+        DecimalFormat df = new DecimalFormat("#.00");
         BigDecimal p = new BigDecimal(df.format(price));
         BigDecimal buyerMoney = new BigDecimal(df.format(buyerMsg.getMoney()));
         BigDecimal sellerMoney = new BigDecimal(df.format(sellerMsg.getMoney()));
         double buyerBalance = buyerMoney.add(p).doubleValue();
-        double sellerBalance=sellerMoney.subtract(p).doubleValue();
-        if(sellerBalance>0){
+        double sellerBalance = sellerMoney.subtract(p).doubleValue();
+        if (sellerBalance > 0) {
             buyerMsg.setMoney(buyerBalance);
             sellerMsg.setMoney(sellerBalance);
             userMsgMapper.updateUserMsg(buyerMsg);
@@ -164,7 +176,7 @@ public class OrderServiceImpl implements OrderService {
             orderMapper.updateOrder(order);
             commodityMapper.updateCommodity(commodity);
             clearCommodityCache();
-        }else {
+        } else {
             throw new Exception("你的账户余额不足，无法确认退款");
         }
         order.setPaystate(1);
@@ -175,15 +187,15 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public boolean deleteOrderBuyer(String orderId) throws Exception {
         Order order = orderMapper.getOrderByOrderId(orderId);
-        if(order.getPaystate()!=1)throw new Exception("订单未完成，无法删除订单");
+        if (order.getPaystate() != 1) throw new Exception("订单未完成，无法删除订单");
         order.setDeletemarkbuyer(true);
         orderMapper.updateOrder(order);
         return true;
     }
 
-    private boolean isReturn(Order order){
+    private boolean isReturn(Order order) {
         String finishtime = order.getFinishtime();
-        if(finishtime.equals("0000-00-00 00:00:00")||finishtime==null){
+        if (finishtime.equals("0000-00-00 00:00:00") || finishtime == null) {
             return true;
         }
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -191,23 +203,24 @@ public class OrderServiceImpl implements OrderService {
             Date parse = simpleDateFormat.parse(finishtime);
             long time = parse.getTime();
             long l = System.currentTimeMillis();
-            long result=time-l;
+            long result = time - l;
             long day = TimeUnit.MILLISECONDS.toDays(result);
-            if(day<3){
+            if (day < 3) {
                 return true;
-            }else {
+            } else {
                 return false;
             }
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
     }
-    private void clearCommodityCache(){
+
+    private void clearCommodityCache() {
         List<Classify> classify = commodityService.getClassify();
         Iterator<Classify> iterator = classify.iterator();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Classify classifyObj = iterator.next();
-            redisTemplate.delete("commoditiesList"+classifyObj.getKey());
+            redisTemplate.delete("commoditiesList" + classifyObj.getKey());
         }
         redisTemplate.delete("commoditiesListall");
     }

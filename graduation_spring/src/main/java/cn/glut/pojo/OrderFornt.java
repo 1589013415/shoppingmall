@@ -14,6 +14,8 @@ public class OrderFornt {
     private String createtime;
     private String finishtime;
     private String userplayid;
+    private String username;
+    private String sellerUsername;
     private String sellerid;
     private String commodityid;
     private String price;

@@ -6,12 +6,12 @@ import cn.glut.mapper.UserMapper;
 import cn.glut.mapper.UserMsgMapper;
 import cn.glut.pojo.Commodity;
 import cn.glut.pojo.ManageCommodityFront;
-import cn.glut.pojo.UserMsg;
 import cn.glut.service.ManageCommodityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,18 +25,20 @@ public class ManageCommodityServiceImpl implements ManageCommodityService {
     private UserMsgMapper userMsgMapper;
     @Autowired
     private UserMapper userMapper;
+
     @Override
     public List<ManageCommodityFront> getCommodities(ManageCommodityFront mangeCommodityFront) {
         List<Commodity> commodityAll = commodityMapper.getCommodityAll();
         String commodityname = mangeCommodityFront.getCommodityname();
-        boolean b1=commodityname==null||commodityname.length()==0||commodityname.equals("");
+        boolean b1 = commodityname == null || commodityname.length() == 0 || commodityname.equals("");
         String classname = mangeCommodityFront.getClassname();
-        boolean b2=classname==null||classname.length()==0||classname.equals("");
+        boolean b2 = classname == null || classname.length() == 0 || classname.equals("");
         int state = mangeCommodityFront.getState();
         List<ManageCommodityFront> list = new ArrayList<ManageCommodityFront>();
-        if(b1&&b2){
-            for (Commodity commodity:commodityAll
-                 ) {
+        if (b1 && b2) {
+            for (Commodity commodity : commodityAll
+            ) {
+//                if(commodity.getIspay()==1)continue;//筛选出已付款商品
                 ManageCommodityFront manageCommodity = new ManageCommodityFront();
                 manageCommodity.setCommodityid(commodity.getCommodityid());
                 manageCommodity.setUsername(userMapper.getUserByUserId(commodity.getUserid()).getUserName());
@@ -52,23 +54,56 @@ public class ManageCommodityServiceImpl implements ManageCommodityService {
                 manageCommodity.setFailbecause(commodity.getFailbecause());
                 list.add(manageCommodity);
             }
-        }else{
+        } else {
 
         }
         return list;
     }
-   private List<String>  getImpagePaht(String image){
-       String imagePathCatalogue = image.replace("http://localhost:8080/glut","D:/ZgraduationImage");
-       File[] files = new File(imagePathCatalogue).listFiles();
-       ArrayList<String> imagePathList = new ArrayList<>();
-       for (File file:files
-       ) {
-           if(file.isDirectory()){
-               continue;
-           }
-           String imagePath = file.getPath().replace("D:\\ZgraduationImage", "http://localhost:8080/glut");
-           imagePathList.add(imagePath);
-       }
-       return imagePathList;
-   }
+
+    @Override
+    public void auditCommodity(String commodityId, String flag, String failBecause) throws Exception {
+        Commodity commodity = commodityMapper.getCommodityByCommodityId(new BigInteger(commodityId));
+        int stateOlder = commodity.getState();
+        if (stateOlder == 3) throw new Exception("正在出售中的商品无法进行该操作");
+        if (stateOlder == 4) throw new Exception("已挂售的商品无法进行该操作");
+        switch (flag) {
+            case "success":
+                commodity.setState(1);
+                break;
+            case "fail":
+                commodity.setState(2);
+                commodity.setFailbecause(failBecause);
+                break;
+            case "cancel":
+                commodity.setState(0);
+                commodity.setFailbecause("无");
+                break;
+        }
+        commodityMapper.updateCommodity(commodity);
+    }
+
+    @Override
+    public void deleteCommodity(String commodityId) throws Exception {
+        Commodity commodity = commodityMapper.getCommodityByCommodityId(new BigInteger(commodityId));
+        if(commodity==null) throw new Exception("库存中无该商品");
+        int stateOlder = commodity.getState();
+        if (stateOlder == 3) throw new Exception("正在出售中的商品无法删除");
+        if (stateOlder == 4) throw new Exception("已挂售的商品无法删除");
+        commodityMapper.deleteCommodity(commodity.getCommodityid());
+    }
+
+    private List<String> getImpagePaht(String image) {
+        String imagePathCatalogue = image.replace("http://localhost:8080/glut", "D:/ZgraduationImage");
+        File[] files = new File(imagePathCatalogue).listFiles();
+        ArrayList<String> imagePathList = new ArrayList<>();
+        for (File file : files
+        ) {
+            if (file.isDirectory()) {
+                continue;
+            }
+            String imagePath = file.getPath().replace("D:\\ZgraduationImage", "http://localhost:8080/glut");
+            imagePathList.add(imagePath);
+        }
+        return imagePathList;
+    }
 }

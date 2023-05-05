@@ -97,7 +97,7 @@ class UserContent extends Component {
                             style={{ backgroundColor: "aliceblue" }}
                             placeholder="请输入你想要找的商品"
                             allowClear
-                            enterButton="Search"
+                            enterButton="搜索"
                             size="large"
                             value={isSearchValue}
                             onChange={(e) => { this.setState({ isSearchValue: e.target.value }) }}

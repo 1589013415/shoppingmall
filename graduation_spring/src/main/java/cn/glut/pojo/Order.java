@@ -11,7 +11,7 @@ import java.math.BigInteger;
 @NoArgsConstructor
 public class Order {
     private String orderid;
-    private int orderstate;
+    private int orderstate;//没有用到
     private String createtime;
     private String finishtime;
     private BigInteger userplayid;
