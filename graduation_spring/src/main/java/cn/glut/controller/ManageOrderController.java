@@ -36,7 +36,7 @@ public class ManageOrderController {
     public ResultMsg delete(@RequestBody OrderFornt orderFornt){
         try {
             manageOrderService.deleteOrder(orderFornt);
-            return new ResultMsg(200,"删除顶单成功",true,null);
+            return new ResultMsg(200,"删除订单成功",true,null);
         } catch (Exception e) {
             return new ResultMsg(0,e.getMessage(),false,null);
         }
