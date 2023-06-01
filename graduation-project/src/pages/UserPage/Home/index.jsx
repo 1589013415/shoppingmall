@@ -57,7 +57,6 @@ export class UserPage extends Component {
                             <Redirect to="/userhome/usercomtent" />
                         </Switch>
                     </Content>
-                    <Footer><Row style={{ fontSize: "80%" }} justify="end">指导老师：唐涛老师<br />网站作用人：罗鹏</Row></Footer>
                 </Layout>
             </Spin>
         )

@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
 import { Breadcrumb, Row, Col, Card, Table, Tabs, Button, Space, message, Modal } from 'antd';
-import { BankTwoTone, ShopTwoTone, ContainerTwoTone, ExclamationCircleFilled } from '@ant-design/icons';
+import { BankTwoTone, ShopTwoTone, ContainerTwoTone, ExclamationCircleFilled, ReloadOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import cookie from 'js-cookie';
 import "./index.css"
@@ -147,7 +147,7 @@ export class MyOreder extends Component {
         )
     }
     //删除订单
-    deleteOrderBuyer = async (record) => {
+    deleteOrder = async (record, flag) => {
         confirm({
             title: '删除',
             icon: <ExclamationCircleFilled />,
@@ -156,8 +156,9 @@ export class MyOreder extends Component {
             okType: 'danger',
             cancelText: '取消',
             onOk: async () => {
+                let recordAddFlag = { ...record, flag }
                 let token = cookie.get("token")
-                await axios.post(`/api/order/deletebuyer`, record, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
+                await axios.post(`/api/order/delete`, recordAddFlag, { headers: { "Content-Type": "multipart/form-data", "token": token } }).then(
                     respones => {
                         const { success, msg } = respones.data
                         if (success) {
@@ -185,7 +186,7 @@ export class MyOreder extends Component {
         this.getUserOrder();
     }
     render() {
-        const { pageNumSell, pageSizeSell, orderTotalSell, pageNumBuy, pageSizeBuy, orderTotalBuy, buyOrderDate, sellOrderDate } = this.state
+        const { buyOrderDate, sellOrderDate } = this.state
         let columnsbuy = [
             {
                 title: '订单号',
@@ -222,8 +223,8 @@ export class MyOreder extends Component {
                                     <div>
                                         {record.canReturn ?
                                             <Space><Button onClick={() => { this.refund(record, "buyer") }} style={{ background: "#FFE78F" }}>退款</Button>
-                                                <Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button></Space>
-                                            : <Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button>}
+                                                <Button onClick={() => { this.deleteOrder(record, "buyer") }} style={{ background: "#ff02005c" }}>删除订单</Button></Space>
+                                            : <Button onClick={() => { this.deleteOrder(record, "buyer") }} style={{ background: "#ff02005c" }}>删除订单</Button>}
                                     </div>
                                     :
                                     <Space>
@@ -235,15 +236,15 @@ export class MyOreder extends Component {
                                     <div>
                                         {record.canReturn ?
                                             <Space><Button onClick={() => { this.refund(record, "buyer") }} style={{ background: "#FFE78F" }}>退款</Button>
-                                                <Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button></Space>
-                                            : <Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button>}
+                                                <Button onClick={() => { this.deleteOrder(record, "buyer") }} style={{ background: "#ff02005c" }}>删除订单</Button></Space>
+                                            : <Button onClick={() => { this.deleteOrder(record, "buyer") }} style={{ background: "#ff02005c" }}>删除订单</Button>}
                                     </div>
                                     :
                                     record.paystate === 2 ?//退款中
                                         <span>退款中</span>
                                         :
                                         record.paystate === 3 ?//退款已完成
-                                            <Space><Button onClick={() => { this.deleteOrderBuyer(record) }} style={{ background: "#ff02005c" }}>删除订单</Button></Space> : null
+                                            <Space><Button onClick={() => { this.deleteOrder(record, "buyer") }} style={{ background: "#ff02005c" }}>删除订单</Button></Space> : null
                         }
                     </div>
                 ),
@@ -296,14 +297,14 @@ export class MyOreder extends Component {
                                     <div>
                                         {record.canReturn ?
                                             <Space><span>商品包退中无法删除订单</span><Button disabled style={{ background: "#ff02005c" }}>删除订单</Button></Space>
-                                            : <Button style={{ background: "#ff02005c" }}>删除订单</Button>}
+                                            : <Button onClick={() => { this.deleteOrder(record, "seller") }} style={{ background: "#ff02005c" }}>删除订单</Button>}
                                     </div>
                                     :
                                     record.paystate === 2 ?//退款中
                                         <Button onClick={() => { this.refund(record, "seller") }} style={{ background: "#FFE78F" }} >确认退款</Button>
                                         :
                                         record.paystate === 3 ?//退款已完成
-                                            <Space><Button style={{ background: "#ff02005c" }}>删除订单</Button></Space> : null
+                                            <Space><Button onClick={() => { this.deleteOrder(record, "seller") }} style={{ background: "#ff02005c" }}>删除订单</Button></Space> : null
 
 
                         }
@@ -313,7 +314,7 @@ export class MyOreder extends Component {
             },
         ];
         return (
-            <div className='div' style={{ height: "600px" }}>
+            <div className='div'>
                 <div style={{ height: "5px" }} />
                 <Row>
                     <Col span={6} offset={1}>
@@ -325,7 +326,9 @@ export class MyOreder extends Component {
                     </Col>
                     <Col span={20}>
                         <div style={{ height: "30px" }}></div>
-                        <Card style={{ background: "#FFE78F" }}>
+                        <Card style={{ background: "#FFE78F" }}
+                        >
+                            <Button style={{ color: "blue" }} onClick={() => { this.getUserOrder() }}><ReloadOutlined /></Button>
                             <Tabs defaultActiveKey="1" onChange={this.callback}>
                                 <TabPane tab="购买订单" key="1">
                                     <Table columns={columnsbuy} dataSource={buyOrderDate} />

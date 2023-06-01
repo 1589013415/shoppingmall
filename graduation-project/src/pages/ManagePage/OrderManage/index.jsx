@@ -55,7 +55,7 @@ export class OrderManage extends Component {
     confirm({
       title: '是否要删除订单？',
       icon: <ExclamationCircleFilled />,
-      content: "删除订单,订单会彻底删除,并且如果订单未已完成状态会删除用户的商品,请慎重选择",
+      content: "删除订单,订单会彻底删除,并且如果订单是已完成状态会删除用户的商品,请慎重选择",
       onOk: () => {
         try {
           axios.post(`/api/manage/order/delete`, record, { headers: { token: cookies.get("tokenmanage") } }).then(

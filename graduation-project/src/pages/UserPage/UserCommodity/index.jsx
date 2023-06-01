@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom';
-import { Breadcrumb, Row, Col, Card, Button, Empty, Pagination, Modal, Drawer } from 'antd';
-import { BankTwoTone, ShopTwoTone, ContainerTwoTone, PlusCircleTwoTone, ExclamationCircleFilled } from '@ant-design/icons';
+import { Breadcrumb, Row, Col, Card, Button, Empty, Pagination, Modal, Drawer, Space } from 'antd';
+import { BankTwoTone, ShopTwoTone, ContainerTwoTone, PlusCircleTwoTone, ExclamationCircleFilled, ReloadOutlined } from '@ant-design/icons';
 import AddCommodity from './UseraddCommidity';
 import UserCommodityCard from './UserCommodityCard';
 import UpdateCommodity from "./UpdateCommodity"
@@ -55,6 +55,7 @@ export class UserCommodity extends Component {
     async getUserCommoditys() {
         const { pageNum, pageSize } = this.state
         let token = cookie.get("token")
+        debugger
         await axios.get(`/api/commodity/getCommoditysByUserid/${pageNum}/${pageSize}`, { headers: { token } }).then(
             respones => {
                 const { userCommodity } = respones.data.resultData
@@ -77,7 +78,13 @@ export class UserCommodity extends Component {
     //当删除的商品是当前界面最后一个商品，重置页数
     resetPageNum = () => {
         this.setState({ pageNum: 1 })
-        this.getUserCommoditys();
+        const { pageNum, pageSize } = this.state
+        let token = cookie.get("token")
+        axios.get(`/api/commodity/getCommoditysByUserid/${pageNum}/${pageSize}`, { headers: { token } }).then(
+            respones => {
+                this.setState({ userCommodityData: respones.data.resultData.userCommodity });
+            }
+        )
     }
     onShowSizeChange = async (pageNum, pageSize) => {
         this.setState({ pageSize })
@@ -146,11 +153,14 @@ export class UserCommodity extends Component {
                     <Col span={20}>
                         <Card
                             style={{ background: "rgb(10 63 137 / 83%)" }}
-                            extra={<Button onClick={this.isOpenAddDrawer} type='text'><span style={{ color: "#FFE78F" }}><PlusCircleTwoTone />我要挂售</span></Button>}
+                            extra={<Space>
+                                <Button onClick={this.isOpenAddDrawer} type='text'><span style={{ color: "#FFE78F" }}><PlusCircleTwoTone />我要挂售</span></Button>
+                                <Button onClick={() => { this.getUserCommoditys() }} type='text'><span style={{ color: "#FFE78F" }}><ReloadOutlined /></span></Button>
+                            </Space>}
                             title={<span style={{ color: "aliceblue" }}>我的商品</span>}
                         >
                             {
-                                userCommodityData.length === 0 ? <Empty description={<span style={{ color: "aliceblue" }}>暂无商品</span>} /> :
+                                userCommodityData.length === 0 ? <div style={{ height: "280px" }} ><div style={{ height: "70px" }} /><Empty description={<span style={{ color: "aliceblue" }}>暂无商品</span>} /></div> :
                                     <div>
                                         {
                                             userCommodityData.map((e) => {

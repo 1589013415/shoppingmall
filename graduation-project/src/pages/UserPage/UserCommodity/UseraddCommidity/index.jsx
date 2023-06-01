@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Col, Drawer, Form, Input, Row, Upload, message, Select, InputNumber, Alert } from 'antd';
+import { Button, Col, Drawer, Form, Input, Row, Upload, message, Select, InputNumber, Alert, Modal } from 'antd';
 import axios from 'axios';
 import cookie from "js-cookie";
 var images = null;
@@ -9,7 +9,9 @@ export class AddCommodity extends Component {
     state = {
         imageUrl: "",
         imagesListLength: "0",
-        selectOptions: []
+        selectOptions: [],
+        previewOpen: false,
+        previewImage: ""
     }
     formRef = React.createRef()
     getBase64 = (img, callback) => {
@@ -36,6 +38,10 @@ export class AddCommodity extends Component {
             return Upload.LIST_IGNORE;
         }
         return false;
+    }
+    //上传图片预览动作
+    handlePreview = (file) => {
+        this.setState({ previewOpen: true, previewImage: file.thumbUrl })
     }
     normFile = (event) => {
         images = event.fileList;
@@ -101,7 +107,7 @@ export class AddCommodity extends Component {
 
     render() {
         const { isOpenAddDrawerFalg } = this.props
-        const { imageUrl, imagesListLength, selectOptions } = this.state
+        const { imageUrl, imagesListLength, selectOptions, previewOpen, previewImage } = this.state
         return (
             <Drawer
                 title={<span style={{ color: "#FFE78F" }}>请填写要挂售商品的信息</span>}
@@ -212,6 +218,7 @@ export class AddCommodity extends Component {
                                 listType="picture-card"
                                 beforeUpload={this.beforeUpload}
                                 onChange={this.updataChange}
+                                onPreview={this.handlePreview}
                                 maxCount="4"
                             >{imageUrl === "" || imageUrl === undefined ?
                                 (
@@ -262,6 +269,15 @@ export class AddCommodity extends Component {
                         </Row>
                     </Form.Item>
                 </Form>
+                <Modal open={previewOpen} title='商品图片预览' footer={null} onCancel={() => { this.setState({ previewOpen: false }) }}>
+                    <img
+                        alt="example"
+                        style={{
+                            width: '100%',
+                        }}
+                        src={previewImage}
+                    />
+                </Modal>
             </Drawer>
         )
     }

@@ -57,6 +57,13 @@ class RegisterCard extends Component {
             }, 0.8)
             return
         }
+        message.warning({
+            content: "已发送验证码",
+            className: 'custom-class', style: {
+                marginTop: '20vh',
+                fontSize: "110%"
+            },
+        }, 2)
         await axios.get("/user/getverifyRegister/" + email).then(
             response => {
                 if (response.data.success) {
