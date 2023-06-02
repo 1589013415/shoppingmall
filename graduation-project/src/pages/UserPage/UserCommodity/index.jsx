@@ -55,7 +55,6 @@ export class UserCommodity extends Component {
     async getUserCommoditys() {
         const { pageNum, pageSize } = this.state
         let token = cookie.get("token")
-        debugger
         await axios.get(`/api/commodity/getCommoditysByUserid/${pageNum}/${pageSize}`, { headers: { token } }).then(
             respones => {
                 const { userCommodity } = respones.data.resultData
@@ -77,12 +76,16 @@ export class UserCommodity extends Component {
     }
     //当删除的商品是当前界面最后一个商品，重置页数
     resetPageNum = () => {
-        this.setState({ pageNum: 1 })
-        const { pageNum, pageSize } = this.state
+        const { pageSize } = this.state
         let token = cookie.get("token")
-        axios.get(`/api/commodity/getCommoditysByUserid/${pageNum}/${pageSize}`, { headers: { token } }).then(
+        axios.get(`/api/commodity/getCommoditysByUserid/${1}/${pageSize}`, { headers: { token } }).then(
             respones => {
-                this.setState({ userCommodityData: respones.data.resultData.userCommodity });
+                this.setState({ userCommodityData: respones.data.resultData.userCommodity, pageNum: 1 });
+            }
+        )
+        axios.get(`/api/commodity/size`, { headers: { token } }).then(
+            respones => {
+                this.setState({ userCommodityTotal: respones.data.resultData.total });
             }
         )
     }
