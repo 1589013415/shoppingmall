@@ -90,10 +90,10 @@ public class UserOrderController {
             return new ResultMsg(0,e.getMessage(),false,null);
         }
     }
-    @PostMapping("/deletebuyer")
+    @PostMapping("/delete")
     public ResultMsg deleteOrder(OrderFornt orderFornt){
         try {
-            orderService.deleteOrderBuyer(orderFornt.getOrderid());
+            orderService.deleteOrder(orderFornt);
             return new ResultMsg(200,"删除订单成功",true,null);
         } catch (Exception e) {
             return new ResultMsg(0,e.getMessage(),false,null);

@@ -45,7 +45,6 @@ public class UserServiceImpl implements UserService {
             map.put("添加成功", true);
             return map;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             map.put("添加失败", false);
             return map;
         }

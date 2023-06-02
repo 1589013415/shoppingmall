@@ -7,5 +7,5 @@ import java.util.List;
 public interface ManageCommodityService {
     public List<ManageCommodityFront> getCommodities(ManageCommodityFront mangeCommodityFront );
     public void auditCommodity(String commodityId,String flag,String failBecause)throws Exception;
-    void deleteCommodity(String commodityId) throws Exception;
+    void deleteCommodity(String commodityId,String flag) throws Exception;
 }

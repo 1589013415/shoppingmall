@@ -8,7 +8,6 @@ import java.math.BigInteger;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserMsg {
     private BigInteger userid;
     private String nickname;
@@ -16,4 +15,10 @@ public class UserMsg {
     private String email;
     private Double money;
     private String address;
+    public UserMsg (){
+        this.nickname="用户暂未输入";
+        this.photo="用户暂未输入";
+        this.address="用户暂未输入";
+        this.money=new Double(0);
+    }
 }

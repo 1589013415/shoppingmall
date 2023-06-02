@@ -14,6 +14,9 @@ public class ManageCommodityFront {
     private BigInteger commodityid;
     private String username;
     private String nickname;
+    private String photo;
+    private String email;
+    private String address;
     private String classname;
     private String commodityname;
     private List<String> imagePath;

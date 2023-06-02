@@ -148,7 +148,6 @@ public class UserLoginController {
 
     @PostMapping("/register")
     public ResultMsg register(@RequestBody UserRegister user) {
-        System.out.println(user);
         ResultMsg resultMsg = new ResultMsg();
         String verifyCode = (String) redisTemplate.opsForValue().get("resetpassword" + user.getEmail());
         if (user.getVerifyCode().equals(verifyCode)) {

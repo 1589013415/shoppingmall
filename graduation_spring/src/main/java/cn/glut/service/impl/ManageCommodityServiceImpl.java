@@ -1,12 +1,12 @@
 package cn.glut.service.impl;
 
-import cn.glut.mapper.ClassifyMapper;
-import cn.glut.mapper.CommodityMapper;
-import cn.glut.mapper.UserMapper;
-import cn.glut.mapper.UserMsgMapper;
+import cn.glut.mapper.*;
 import cn.glut.pojo.Commodity;
 import cn.glut.pojo.ManageCommodityFront;
+import cn.glut.pojo.Order;
+import cn.glut.pojo.UserMsg;
 import cn.glut.service.ManageCommodityService;
+import cn.glut.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +25,8 @@ public class ManageCommodityServiceImpl implements ManageCommodityService {
     private UserMsgMapper userMsgMapper;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private OrderMapper orderMapper;
 
     @Override
     public List<ManageCommodityFront> getCommodities(ManageCommodityFront mangeCommodityFront) {
@@ -39,10 +41,16 @@ public class ManageCommodityServiceImpl implements ManageCommodityService {
             for (Commodity commodity : commodityAll
             ) {
 //                if(commodity.getIspay()==1)continue;//筛选出已付款商品
+                UserMsg userMsg = userMsgMapper.getUserMsg(commodity.getUserid());
                 ManageCommodityFront manageCommodity = new ManageCommodityFront();
                 manageCommodity.setCommodityid(commodity.getCommodityid());
                 manageCommodity.setUsername(userMapper.getUserByUserId(commodity.getUserid()).getUserName());
-                manageCommodity.setNickname(userMsgMapper.getUserMsg(commodity.getUserid()).getNickname());
+                if(userMsg!=null){
+                    manageCommodity.setNickname(userMsg.getNickname());
+                    manageCommodity.setPhoto(userMsg.getPhoto());
+                    manageCommodity.setEmail(userMsg.getEmail());
+                    manageCommodity.setAddress(userMsg.getAddress());
+                }
                 manageCommodity.setClassname(classifyMapper.getClassname(commodity.getClassifyid()));
                 manageCommodity.setCommodityname(commodity.getCommodityname());
                 manageCommodity.setImagePath(getImpagePaht(commodity.getImage()));
@@ -83,13 +91,25 @@ public class ManageCommodityServiceImpl implements ManageCommodityService {
     }
 
     @Override
-    public void deleteCommodity(String commodityId) throws Exception {
+    public void deleteCommodity(String commodityId,String flag) throws Exception {
         Commodity commodity = commodityMapper.getCommodityByCommodityId(new BigInteger(commodityId));
+        Order order = orderMapper.getOrderByCommodityId(commodityId);
         if(commodity==null) throw new Exception("库存中无该商品");
         int stateOlder = commodity.getState();
-        if (stateOlder == 3) throw new Exception("正在出售中的商品无法删除");
-        if (stateOlder == 4) throw new Exception("已挂售的商品无法删除");
+        if(flag.equals("not")){
+            if (stateOlder == 3) throw new Exception("正在出售中的商品无法删除");
+            if (stateOlder == 4) throw new Exception("已挂售的商品无法删除");
+        }
+        if(flag.equals("sold")){
+            if (stateOlder == 3) throw new Exception("正在出售中的商品无法删除");
+            if (stateOlder == 4) {
+                if(VerifyUtil.isReturn(order)){
+                    throw new Exception("该订单的商品还可以退款，不允许删除");
+                }
+            };
+        }
         commodityMapper.deleteCommodity(commodity.getCommodityid());
+        orderMapper.deleteOrderByOrderId(order.getOrderid());
     }
 
     private List<String> getImpagePaht(String image) {

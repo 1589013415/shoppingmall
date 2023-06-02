@@ -2,6 +2,7 @@ package cn.glut.service;
 
 import cn.glut.pojo.Commodity;
 import cn.glut.pojo.Order;
+import cn.glut.pojo.OrderFornt;
 import cn.glut.pojo.User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,5 +20,5 @@ public interface OrderService {
     public boolean refund(String orderId) throws Exception;
     @Transactional
     public boolean confirmRefund(String orderId) throws Exception;
-    public boolean deleteOrderBuyer(String orderId) throws Exception;
+    public boolean deleteOrder(OrderFornt orderFornt) throws Exception;
 }

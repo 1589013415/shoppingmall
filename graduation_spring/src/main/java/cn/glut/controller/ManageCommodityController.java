@@ -47,4 +47,20 @@ public class ManageCommodityController {
             return new ResultMsg(0,"审核操作失败:"+e.getMessage(),false,null);
         }
     }
+    @PostMapping("/delete/{commodityid}/{flag}")
+    public ResultMsg deleteCommodity(@PathVariable String commodityid, @PathVariable String flag){
+        try {
+            manageCommodityService.deleteCommodity(commodityid,flag);
+            List<Classify> classify = commodityService.getClassify();
+            Iterator<Classify> iterator = classify.iterator();
+            while (iterator.hasNext()){
+                Classify classifyObj = iterator.next();
+                redisTemplate.delete("commoditiesList"+classifyObj.getKey());
+            }
+            redisTemplate.delete("commoditiesListall");
+            return new ResultMsg(200,"审核操作成功:",true,null);
+        } catch (Exception e) {
+            return new ResultMsg(0,"审核操作失败:"+e.getMessage(),false,null);
+        }
+    }
 }

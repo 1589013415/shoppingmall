@@ -19,6 +19,8 @@ public interface OrderMapper {
 
     @Select("select *from `order` where orderid=#{orderId}")
     Order getOrderByOrderId(String orderId);
+    @Select("select *from `order` where commodityid=#{commodityid}")
+    Order getOrderByCommodityId(String commodityid);
     @Select ("select *from `order` where userplayid=#{userplayId}")
     List<Order> getOderByUserplayId(BigInteger userplayId);
     @Select ("select *from `order` where sellerid=#{sellerId}")

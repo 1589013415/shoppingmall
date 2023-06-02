@@ -65,7 +65,7 @@ public class BuyCommodityServiceImpl implements BuyCommodityService {
         BigDecimal buyerMoney = new BigDecimal(df.format(buyer.getMoney()));
         double buyerBalance = buyerMoney.subtract(price).doubleValue();
         double sellerBalance=sellerMoney.add(price).doubleValue();
-        if(buyerBalance>0){
+        if(buyerBalance>=0){
             buyer.setMoney(buyerBalance);
             seller.setMoney(sellerBalance);
             commodity.setIspay(1);

@@ -7,6 +7,7 @@ import cn.glut.pojo.Order;
 import cn.glut.pojo.OrderFornt;
 import cn.glut.pojo.User;
 import cn.glut.service.ManageOrderService;
+import cn.glut.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,12 +58,11 @@ public class ManageOrderServiceImpl implements ManageOrderService {
         Order order = orderMapper.getOrderByOrderId(orderFornt.getOrderid());
         if(order==null) throw new Exception("订单不存在");
         if(order.getPaystate()==1){//已完成的订单,需要删除商品
+            if(VerifyUtil.isReturn(order)){
+                throw new Exception("该订单的商品，还在退货期内，无法删除订单");
+            }
             orderMapper.deleteOrderByOrderId(order.getOrderid());
             commodityMapper.deleteCommodity(order.getCommodityid());
-            return;
-        }
-        if(order.getPaystate()==3){//退款的不用删除商品
-            orderMapper.deleteOrderByOrderId(order.getOrderid());
             return;
         }
         throw new Exception("订单未完成无法删除");

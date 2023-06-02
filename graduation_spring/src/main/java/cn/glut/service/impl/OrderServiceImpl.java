@@ -7,6 +7,7 @@ import cn.glut.pojo.*;
 import cn.glut.service.CommodityService;
 import cn.glut.service.OrderService;
 import cn.glut.util.RedisUtil;
+import cn.glut.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -81,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
         ) {
             if (order.isDeletemarkbuyer()) continue;
             order.setStateMsg(order.getPaystate());
-            order.setCanReturn(isReturn(order));
+            order.setCanReturn(VerifyUtil.isReturn(order));
             orders.add(order);
         }
         return orders;
@@ -95,7 +96,7 @@ public class OrderServiceImpl implements OrderService {
         ) {
             if (order.isDeletemarkseller()) continue;
             order.setStateMsg(order.getPaystate());
-            order.setCanReturn(isReturn(order));
+            order.setCanReturn(VerifyUtil.isReturn(order));
             orders.add(order);
         }
         return orders;
@@ -185,35 +186,42 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public boolean deleteOrderBuyer(String orderId) throws Exception {
-        Order order = orderMapper.getOrderByOrderId(orderId);
+    public boolean deleteOrder(OrderFornt orderFornt) throws Exception {
+        String flag = orderFornt.getFlag();
+        Order order = orderMapper.getOrderByOrderId(orderFornt.getOrderid());
         if (order.getPaystate() != 1) throw new Exception("订单未完成，无法删除订单");
-        order.setDeletemarkbuyer(true);
+        if(flag.equals("buyer")){
+            order.setDeletemarkbuyer(true);
+        }else if(flag.equals("seller")){
+            order.setDeletemarkseller(true);
+        }else {
+            throw new Exception("删除订单失败，错误请求");
+        }
         orderMapper.updateOrder(order);
         return true;
     }
 
-    private boolean isReturn(Order order) {
-        String finishtime = order.getFinishtime();
-        if (finishtime.equals("0000-00-00 00:00:00") || finishtime == null) {
-            return true;
-        }
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            Date parse = simpleDateFormat.parse(finishtime);
-            long time = parse.getTime();
-            long l = System.currentTimeMillis();
-            long result = time - l;
-            long day = TimeUnit.MILLISECONDS.toDays(result);
-            if (day < 3) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    private boolean isReturn(Order order) {
+//        String finishtime = order.getFinishtime();
+//        if (finishtime.equals("0000-00-00 00:00:00") || finishtime == null) {
+//            return true;
+//        }
+//        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        try {
+//            Date parse = simpleDateFormat.parse(finishtime);
+//            long time = parse.getTime();
+//            long l = System.currentTimeMillis();
+//            long result = time - l;
+//            long day = TimeUnit.MILLISECONDS.toDays(result);
+//            if (day < 3) {
+//                return true;
+//            } else {
+//                return false;
+//            }
+//        } catch (ParseException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     private void clearCommodityCache() {
         List<Classify> classify = commodityService.getClassify();
