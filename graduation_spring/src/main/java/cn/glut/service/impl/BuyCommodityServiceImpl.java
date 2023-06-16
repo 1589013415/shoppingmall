@@ -88,19 +88,5 @@ public class BuyCommodityServiceImpl implements BuyCommodityService {
         }else {
             throw new Exception("用户余额不足");
         }
-
     }
-    //执行，则清除redis中商品列表缓存缓存
-
-//    public void clearCacheRedis(){
-//            System.out.println("BuyCommodityServiceImpl.class clearCacheRedis()方法：删除了redis中商品缓存");
-//            List<Classify> classify = commodityService.getClassify();
-//            Iterator<Classify> iterator = classify.iterator();
-//            while (iterator.hasNext()){
-//                Classify classifyObj = iterator.next();
-//                redisTemplate.delete("commoditiesList"+classifyObj.getKey());
-//            }
-//            redisTemplate.delete("commoditiesListall");
-//    }
-
 }

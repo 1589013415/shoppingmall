@@ -35,7 +35,7 @@ public class ManageOrderController {
     @PostMapping("/delete")
     public ResultMsg delete(@RequestBody OrderFornt orderFornt){
         try {
-            manageOrderService.deleteOrder(orderFornt);
+            manageOrderService.afterAOPdeleteOrder(orderFornt);
             return new ResultMsg(200,"删除订单成功",true,null);
         } catch (Exception e) {
             return new ResultMsg(0,e.getMessage(),false,null);

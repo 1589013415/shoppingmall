@@ -55,10 +55,11 @@ public class ManageOrderServiceImpl implements ManageOrderService {
 
     @Transactional
     @Override
-    public void deleteOrder(OrderFornt orderFornt) throws Exception {
+    public void afterAOPdeleteOrder(OrderFornt orderFornt) throws Exception {
         Order order = orderMapper.getOrderByOrderId(orderFornt.getOrderid());
         if(order==null) throw new Exception("订单不存在");
-        if(order.getPaystate()==1||order.getPaystate()==3){//已完成的订单,需要删除商品
+        int payState = order.getPaystate();
+        if(payState==1){//已完成的订单,需要删除商品
             if(VerifyUtil.isReturn(order)){
                 throw new Exception("该订单的商品，还在退货期内，无法删除订单");
             }
@@ -66,6 +67,10 @@ public class ManageOrderServiceImpl implements ManageOrderService {
             Commodity commodity = commodityMapper.getCommodityByCommodityId(order.getCommodityid());
             if(commodity!=null&&VerifyUtil.deleteImagePath(commodity.getImage()))
             commodityMapper.deleteCommodity(order.getCommodityid());
+            return;
+        }
+        if(payState==3){//退款商品，直接删除订单数据
+            orderMapper.deleteOrderByOrderId(order.getOrderid());
             return;
         }
         throw new Exception("订单未完成无法删除");
