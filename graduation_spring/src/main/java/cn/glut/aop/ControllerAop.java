@@ -25,6 +25,8 @@ public class ControllerAop {
     //1.定义切入点
     @Pointcut("execution(* cn.glut.service.*.api*(..))")
     private void deleteRedisAllCommodities(){}
+    @Pointcut("execution(* cn.glut.service.*.afterAOP*(..))")
+    private void clearCacheCommodityWhenBuyCommodities(){}
     @Before("deleteRedisAllCommodities()")
     public void deleteRedis(){
         System.out.println("ControllerAop.class deleteRedis()方法：删除了redis中商品缓存");
@@ -36,4 +38,16 @@ public class ControllerAop {
         }
         redisTemplate.delete("commoditiesListall");
     }
+    @After("clearCacheCommodityWhenBuyCommodities()")
+    public void deleteRedis2(){
+        System.out.println("ControllerAop.class deleteRedis()方法：删除了redis中商品缓存");
+        List<Classify> classify = commodityService.getClassify();
+        Iterator<Classify> iterator = classify.iterator();
+        while (iterator.hasNext()){
+            Classify classifyObj = iterator.next();
+            redisTemplate.delete("commoditiesList"+classifyObj.getKey());
+        }
+        redisTemplate.delete("commoditiesListall");
+    }
+
 }

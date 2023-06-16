@@ -29,6 +29,8 @@ public class BuyCommodityServiceImpl implements BuyCommodityService {
     CommodityService commodityService;
     @Autowired
     OrderService orderService;
+    @Autowired
+    BuyCommodityService buyCommodityService;
 
     /**
      * state
@@ -52,13 +54,21 @@ public class BuyCommodityServiceImpl implements BuyCommodityService {
             return resultMsg;
         }
         if(commodity.getState()==1&&commodity.getIspay()==0){
-            apiBuyAction(resultMsg,commodity,seller,buyer,buyUser);
+            try {
+                buyCommodityService.afterAOPBuyAction(commodity,seller,buyer,buyUser);
+                resultMsg.setSuccess(true);
+                resultMsg.setState(200);
+                resultMsg.setMsg("购买成功");
+            } catch (Exception e) {
+                resultMsg.setState(2);
+                resultMsg.setMsg(e.getMessage());
+            }
         }
         return resultMsg;
     }
-    //执行，则清除redis中商品列表缓存缓存
+
     @Transactional
-    public void apiBuyAction(ResultMsg resultMsg,Commodity commodity,UserMsg seller,UserMsg buyer,User buyUser) {
+    public void afterAOPBuyAction(Commodity commodity,UserMsg seller,UserMsg buyer,User buyUser) throws Exception{
         DecimalFormat df =new DecimalFormat("#.00");
         BigDecimal price = new BigDecimal(df.format(commodity.getPrice()));
         BigDecimal sellerMoney = new BigDecimal(df.format(seller.getMoney()));
@@ -73,26 +83,24 @@ public class BuyCommodityServiceImpl implements BuyCommodityService {
             commodityMapper.updateCommodity(commodity);
             userMsgMapper.updateUserMsg(seller);
             userMsgMapper.updateUserMsg(buyer);
-            resultMsg.setSuccess(true);
-            resultMsg.setState(200);
-            resultMsg.setMsg("购买成功");
+
             orderService.createOrder(buyUser,commodity);
-            clearCacheRedis();
         }else {
-            resultMsg.setState(2);
-            resultMsg.setMsg("用户余额不足");
+            throw new Exception("用户余额不足");
         }
 
     }
-    public void clearCacheRedis(){
-            System.out.println("BuyCommodityServiceImpl.class clearCacheRedis()方法：删除了redis中商品缓存");
-            List<Classify> classify = commodityService.getClassify();
-            Iterator<Classify> iterator = classify.iterator();
-            while (iterator.hasNext()){
-                Classify classifyObj = iterator.next();
-                redisTemplate.delete("commoditiesList"+classifyObj.getKey());
-            }
-            redisTemplate.delete("commoditiesListall");
-    }
+    //执行，则清除redis中商品列表缓存缓存
+
+//    public void clearCacheRedis(){
+//            System.out.println("BuyCommodityServiceImpl.class clearCacheRedis()方法：删除了redis中商品缓存");
+//            List<Classify> classify = commodityService.getClassify();
+//            Iterator<Classify> iterator = classify.iterator();
+//            while (iterator.hasNext()){
+//                Classify classifyObj = iterator.next();
+//                redisTemplate.delete("commoditiesList"+classifyObj.getKey());
+//            }
+//            redisTemplate.delete("commoditiesListall");
+//    }
 
 }
