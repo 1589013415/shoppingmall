@@ -5,6 +5,7 @@ import cn.glut.pojo.Commodity;
 import cn.glut.pojo.ManageCommodityFront;
 import cn.glut.pojo.Order;
 import cn.glut.pojo.UserMsg;
+import cn.glut.service.CommodityService;
 import cn.glut.service.ManageCommodityService;
 import cn.glut.util.VerifyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class ManageCommodityServiceImpl implements ManageCommodityService {
     @Autowired
     private OrderMapper orderMapper;
 
+
     @Override
     public List<ManageCommodityFront> getCommodities(ManageCommodityFront mangeCommodityFront) {
         List<Commodity> commodityAll = commodityMapper.getCommodityAll();
@@ -45,7 +47,7 @@ public class ManageCommodityServiceImpl implements ManageCommodityService {
                 ManageCommodityFront manageCommodity = new ManageCommodityFront();
                 manageCommodity.setCommodityid(commodity.getCommodityid());
                 manageCommodity.setUsername(userMapper.getUserByUserId(commodity.getUserid()).getUserName());
-                if(userMsg!=null){
+                if (userMsg != null) {
                     manageCommodity.setNickname(userMsg.getNickname());
                     manageCommodity.setPhoto(userMsg.getPhoto());
                     manageCommodity.setEmail(userMsg.getEmail());
@@ -91,25 +93,28 @@ public class ManageCommodityServiceImpl implements ManageCommodityService {
     }
 
     @Override
-    public void deleteCommodity(String commodityId,String flag) throws Exception {
+    public void deleteCommodity(String commodityId, String flag) throws Exception {
         Commodity commodity = commodityMapper.getCommodityByCommodityId(new BigInteger(commodityId));
         Order order = orderMapper.getOrderByCommodityId(commodityId);
-        if(commodity==null) throw new Exception("库存中无该商品");
+        if (commodity == null) throw new Exception("库存中无该商品");
         int stateOlder = commodity.getState();
-        if(flag.equals("not")){
+        if (flag.equals("not")) {
             if (stateOlder == 3) throw new Exception("正在出售中的商品无法删除");
             if (stateOlder == 4) throw new Exception("已挂售的商品无法删除");
         }
-        if(flag.equals("sold")){
+        if (flag.equals("sold")) {
             if (stateOlder == 3) throw new Exception("正在出售中的商品无法删除");
             if (stateOlder == 4) {
-                if(VerifyUtil.isReturn(order)){
+                if (order != null && VerifyUtil.isReturn(order)) {
                     throw new Exception("该订单的商品还可以退款，不允许删除");
                 }
-            };
+            }
+            ;
         }
-        commodityMapper.deleteCommodity(commodity.getCommodityid());
-        orderMapper.deleteOrderByOrderId(order.getOrderid());
+        if (VerifyUtil.deleteImagePath(commodity.getImage()))
+            commodityMapper.deleteCommodity(commodity.getCommodityid());
+        if (order != null)
+            orderMapper.deleteOrderByOrderId(order.getOrderid());
     }
 
     private List<String> getImpagePaht(String image) {

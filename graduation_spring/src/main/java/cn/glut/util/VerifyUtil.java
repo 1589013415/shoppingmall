@@ -2,15 +2,18 @@ package cn.glut.util;
 
 import cn.glut.pojo.Order;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 public class VerifyUtil {
-    private static final int RETURNABLETIME=3;//可退货时间
+    private static final int RETURNABLETIME = 3;//可退货时间
+
     /**
      * 验证是否可以退款
+     *
      * @param order
      * @return
      */
@@ -24,7 +27,7 @@ public class VerifyUtil {
             Date parse = simpleDateFormat.parse(finishtime);
             long time = parse.getTime();
             long l = System.currentTimeMillis();
-            long result = l-time;
+            long result = l - time;
             long day = TimeUnit.MILLISECONDS.toDays(result);
             if (day < RETURNABLETIME) {//退货时间为三天
                 return true;
@@ -34,5 +37,18 @@ public class VerifyUtil {
         } catch (ParseException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static boolean deleteImagePath(String commodityPath) {
+        String imagePath = commodityPath.replace("http://localhost:8080/glut", "D:/ZgraduationImage");
+        File fileDirectory = new File(imagePath);
+        File[] files = fileDirectory.listFiles();
+        for (File file : files
+        ) {
+            file.delete();
+        }
+        fileDirectory.delete();
+        if (new File(imagePath).exists()) return false;
+        return true;
     }
 }
