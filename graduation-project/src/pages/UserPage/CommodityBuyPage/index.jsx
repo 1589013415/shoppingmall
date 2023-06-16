@@ -2,11 +2,9 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom';
 import PubSub from 'pubsub-js'
 import { Row, Col, Card, Image, Descriptions, Button, Empty, message, Modal } from "antd"
-import { ExclamationCircleFilled } from '@ant-design/icons';
 import "./index.css"
 import axios from 'axios';
 import cookies from "js-cookie";
-const { confirm } = Modal
 class CommodityBugPage extends Component {
     state = {
         userMsg: {},
@@ -36,16 +34,18 @@ class CommodityBugPage extends Component {
 
     }
     handleBuyOk = () => {//商品弹窗购买按钮
-        const { commodityMsg, userMsg, isBuyCommidiy } = this.state;
+        const { commodityMsg, userMsg } = this.state;
         this.setState({ isBuyCommidiy: false })
         PubSub.publish("isloading", { isLoading: true, loadingTop: "12%" });
         axios.post(`/api/commodity/buyCommodity`, { commodityId: commodityMsg.commodityid, sellerId: userMsg.userid }, { headers: { token: cookies.get("token") } }).then(
             respoense => {
                 const { success, msg } = respoense.data
-                if (respoense.data.success) {
+                if (success) {
                     message.success(msg)
+                    setTimeout(() => window.close(), 1500)
                 } else {
                     message.warning(msg)
+
                 }
                 PubSub.publish("isloading", { isLoading: false, loadingTop: "" });
             }
