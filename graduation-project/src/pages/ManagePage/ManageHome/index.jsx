@@ -1,15 +1,17 @@
 import React, { Component } from 'react'
 import { Route, Switch, Redirect } from "react-router-dom"
-import { ShopOutlined, ContainerOutlined } from '@ant-design/icons';
+import { ShopOutlined, ContainerOutlined, UserOutlined } from '@ant-design/icons';
 import { Layout, Menu, Button, message } from 'antd';
 import cookies from 'js-cookie';
 import axios from "axios";
 import PubSub from 'pubsub-js'
 import CommodityManage from '../CommodityManage';
 import OrderManage from '../OrderManage/index';
+import UserManage from '../UserManange';
 
 const { Content, Sider, Header } = Layout;
 const itemsMenu = [
+    { key: "/manage/page/user", icon: React.createElement(UserOutlined), label: "用户管理" },
     { key: "/manage/page/commodity", icon: React.createElement(ShopOutlined), label: "商品管理" },
     { key: "/manage/page/order", icon: React.createElement(ContainerOutlined), label: "订单管理" },
 ]
@@ -42,7 +44,6 @@ export class ManageHome extends Component {
     }
     render() {
         const { collapsed, siderMemu } = this.state
-        debugger
         return (
             <Layout hasSider>
                 <Sider
@@ -95,9 +96,10 @@ export class ManageHome extends Component {
                         }}
                     >
                         <Switch>
+                            <Route path="/manage/page/user" component={UserManage} />
                             <Route path="/manage/page/commodity" component={CommodityManage} />
                             <Route path="/manage/page/order" component={OrderManage} />
-                            <Redirect to="/manage/page/commodity" />
+                            <Redirect to="/manage/page/user" />
                         </Switch>
                     </Content>
                 </Layout>

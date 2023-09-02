@@ -90,7 +90,6 @@ export class OrderManage extends Component {
   }
   render() {
     let columns = [
-      { title: '订单号', dataIndex: 'orderid', key: 'orderid', align: 'center' },
       { title: '状态', dataIndex: 'orderstate', key: 'orderstate', align: 'center' },
       { title: '创建时间', dataIndex: 'createtime', key: 'createtime', align: 'center' },
       { title: '完成时间', dataIndex: 'finishtime', key: 'finishtime', align: 'center' },

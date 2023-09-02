@@ -2,6 +2,7 @@ package cn.glut;
 
 import cn.glut.config.SpringConfig;
 import cn.glut.pojo.Classify;
+import cn.glut.pojo.UserColumns;
 import cn.glut.service.CommodityService;
 import org.aspectj.lang.annotation.Pointcut;
 import org.junit.Test;
@@ -32,5 +33,11 @@ public class RedisTest {
             redisTemplate.delete("commoditiesList"+classifyObj.getKey());
         }
         redisTemplate.delete("commoditiesListall");
+    }
+
+    @Test
+    public void test(){
+        UserColumns userColumns = new UserColumns();
+        System.out.println(userColumns);
     }
 }

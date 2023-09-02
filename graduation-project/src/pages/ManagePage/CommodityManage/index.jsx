@@ -188,7 +188,7 @@ export class CommodityManage extends Component {
           <Space>
             {record.state === 0 ?//是否审核中
               <Space>
-                <Button onClick={() => { this.audit(record, "success") }} type="primary">
+                <Button style={{ backgroundColor: "#002EA6" }} onClick={() => { this.audit(record, "success") }} type="primary">
                   审核通过
                 </Button>
                 <Button onClick={() => { this.failAudit(record, "fail") }} type="primary" danger>
@@ -196,8 +196,8 @@ export class CommodityManage extends Component {
                 </Button>
               </Space> :
               record.state === 1 || record.state === 2 ? <Space>
-                <Button onClick={() => { this.audit(record, "cancel") }} type="primary" danger>
-                  取消审核</Button>
+                <Button onClick={() => { this.audit(record, "cancel") }} type="primary" style={{ backgroundColor: "#FFE78F" }}>
+                  <span style={{ color: "#002EA6" }}>取消审核</span></Button>
                 <Button onClick={() => { this.deleteCommodity(record, "not") }} danger>删除商品</Button></Space> :
                 record.state === 3 ?
                   <Space><Button disabled danger>删除商品</Button></Space> :
@@ -211,6 +211,8 @@ export class CommodityManage extends Component {
     ]
     return (
       <Layout>
+        <Header style={headerStyle}>
+        </Header>
         <Content style={contentStyle}>
           <Table columns={columns} dataSource={data} scroll={{
             y: 600, x: 2300,
