@@ -17,18 +17,6 @@ export class App extends Component {
           <Redirect to="/userhome" />
         </Switch>
       </Router>
-
-      // <Router>
-      //   {/* 注册路由 */}
-      //   <Switch>
-      //     <Route path="/userhome" component={UseHome} />
-      //     <Route path="/managehome" component={ManageHome} />
-      //     <Route path="/usermyorder" component={UserMyOreder}></Route>
-
-      //     <Redirect to="/userhome" />
-      //   </Switch>
-      // </Router>
-
     )
   }
 }
