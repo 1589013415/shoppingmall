@@ -1,16 +1,21 @@
 import React, { lazy, Suspense } from 'react'
 import { BrowserRouter } from "react-router-dom"
 import { Routes, Route, Navigate, useRoutes } from "react-router";
+
+import {Spin} from 'antd';
+
 import UserPage from './pages/UserPage/index'
 import ManagePage from "./pages/ManagePage/index"
-const UserHomne =lazy(()=>import("./compoents/UserCompoents/Userhome"))
+const UserHomne =lazy(()=>import("./compoents/UserCompoents/UserHome"))
+const UserLogin =lazy(()=>import("./compoents/UserCompoents/UserLogin"))
+
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/userpage" element={<UserPage />} >
-          <Route path="userhome" element={<Suspense fallback={<h1>正在加载中</h1>}><UserHomne /></Suspense>} />
-          <Route path="userlogin" element={<Suspense fallback={<h1>正在加载中</h1>}><UserHomne /></Suspense>} />
+          <Route path="userhome" element={<Suspense fallback={<Spin spinning={true}/>}><UserHomne /></Suspense>} />
+          <Route path="userlogin" element={<Suspense fallback={<Spin spinning={true}/>}><UserLogin /></Suspense>} />
           <Route path="/userpage/*" element={<Navigate to="userhome" />} />
         </Route>
         <Route path="/managepage" element={<ManagePage />} />
