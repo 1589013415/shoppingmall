@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Route, Switch, Redirect } from "react-router-dom"
 import PubSub from 'pubsub-js'
 import { Layout, Row, Spin } from 'antd';
-import UserHeader from "../../../compoents/userCompoents/UserHeader"
+import UserHeader from "../../../compoents/userCompoents/UserHeader适配修改"
 import UserContent from "../UserContent"
 import UserMyOreder from "../MyOrder"
 import UserCommodity from '../UserCommodity'
