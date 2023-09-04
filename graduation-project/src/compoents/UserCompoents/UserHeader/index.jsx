@@ -1,49 +1,35 @@
 import React from 'react'
-
-import { Image, Col, Row, Breadcrumb, Button, Drawer, Avatar } from 'antd';
+import { Image, Col, Row, Breadcrumb} from 'antd';
 
 import "./index.css"
-import {Utils} from "./Utils"
+import { Utils } from "./Utils"
 
 export default function UserHeader() {
     const [isLogin, setIsLogin] = React.useState(false)
+    const [pageState,setPageState]=React.useState("userhome")
+    let stateMethods={isLogin,setIsLogin,pageState,setPageState}
     return (
         <div className='userHeaderDiv'>
             <Row >
-                <Col span={6}>
+                <Col span={16}>
                     <div>
-                        <Image preview={false} width={50} src="\images\gultShopLogo.png" />
-                        <span className='logSpan'>桂工二手商城</span>
+                        <Image preview={false} width={50} src="\images\ReactShopLogo.png" />
+                        <span className='logSpan'>React二手商城</span>
                     </div>
                 </Col>
                 {isLogin ?
-                    <div>
-                    </div>
-                    : <Col span={5} offset={13}>
+                    <Col span={3} offset={5}>
                         <div className='headerNavDiv'>
-                            <Breadcrumb items={Utils.notLoginItems()} />
+                            <Breadcrumb items={Utils.LoginItems(stateMethods)} />
+                        </div>
+                    </Col>
+                    : <Col span={4} offset={4}>
+                        <div className='headerNavDiv'>
+                            <Breadcrumb items={Utils.LoginItems(stateMethods)} />
                         </div>
                     </Col>
                 }
             </Row>
-            <Drawer
-                title={<span style={{ color: "#FFE78F" }}>个人中心</span>}
-                width={720}
-                onClose={() => { }}
-                open={false}
-                headerStyle={{ background: "rgb(10, 63, 137)" }}
-                bodyStyle={{
-                    background: "aliceblue",
-                    paddingBottom: 80,
-                }}
-                extra={
-                    <Button onClick={() => { }}>返回</Button>
-                }
-                destroyOnClose
-            >
-                <div style={{ height: "50px" }} />
-                {/* <UserMsgDrawer /> */}
-            </Drawer>
         </div >
     )
 }
