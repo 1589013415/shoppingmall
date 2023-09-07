@@ -1,6 +1,6 @@
 import React from 'react'
 
-function ManagePage() {
+function ManagePager() {
   return (
     <div>
       管理者界面
@@ -8,4 +8,4 @@ function ManagePage() {
   )
 }
 
-export default ManagePage
+export default ManagePager

@@ -1,31 +1,9 @@
-import React, { lazy, Suspense } from 'react'
-import { BrowserRouter } from "react-router-dom"
-import { Routes, Route, Navigate} from "react-router";
+import React from 'react'
+import PageRoutes from './PageRoutes';
 
-import UserPage from './pages/UserPage/index'
-import ManagePage from "./pages/ManagePage/index"
-import Loading from './compoents/Loading/idnex';
-const UserHomne = lazy(() => import("./pages/UserHome"))
-const UserLogin = lazy(() => import("./pages/UserLogin"))
-const Userregister=lazy(()=>import("./pages/UserRegister"))
-const UserOrder = lazy(() => import("./pages/UserOrder"))
-const UserCommodities = lazy(() => import("./pages/UserCommodities"))
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/userpage" element={<UserPage />} >
-          <Route path="userhome" element={<Suspense fallback={<Loading/>}><UserHomne /></Suspense>} />
-          <Route path="userlogin" element={<Suspense fallback={<Loading/>}><UserLogin /></Suspense>} />
-          <Route path="userregister" element={<Suspense fallback={<Loading/>}><Userregister /></Suspense>} />
-          <Route path="userorder" element={<Suspense fallback={<Loading/>}><UserOrder /></Suspense>} />
-          <Route path="usercommodities" element={<Suspense fallback={<Loading/>}><UserCommodities /></Suspense>} />
-          <Route path="/userpage" element={<Navigate to="userhome" />} />
-        </Route>
-        <Route path="/managepage" element={<ManagePage />} />
-        <Route path="*" element={<Navigate to="/userpage" />} />
-      </Routes>
-    </BrowserRouter>
+    <PageRoutes/>
   )
 }
 export default App

@@ -1,3 +1,4 @@
+import React, { useContext} from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 
 import { Button, message } from 'antd';
@@ -6,12 +7,15 @@ import { UserOutlined, ShopTwoTone, ContainerTwoTone } from '@ant-design/icons';
 import axios from 'axios';
 import cookie from 'js-cookie';
 
+import { UserMyContext } from '../../MyContext';
+import { PAGEROUTES,AXIOSPATH, PAGESTATE,TOKEN } from '../../const';
 
-function LoginItems(stateMethods) {
+function LoginItems() {
     const navigate = useNavigate()
-    const { isLogin, setIsLogin, pageState, setPageState } = stateMethods
+    const { userState } = useContext(UserMyContext);
+    const { isUserLogin, setIsUserLogin, userPageState, setUserPageState } = userState;
     let exit = () => {
-        axios.get("/user/exit", { headers: { token: cookie.get("usertoken") } }).then(
+        axios.get(AXIOSPATH.userExistByGet, { headers: { token: cookie.get(TOKEN.user) } }).then(
             response => {
                 message.success({
                     content: response.data.msg,
@@ -20,10 +24,10 @@ function LoginItems(stateMethods) {
                         fontSize: "110%",
                     },
                 }, 0.8)
-                setIsLogin(false);
-                setPageState("userhome")
-                navigate("userhome");
-                cookie.remove("usertoken");
+                setIsUserLogin(false);
+                setUserPageState(PAGESTATE.userHome)
+                navigate(PAGEROUTES.userHome);
+                cookie.remove(TOKEN.user);
             }
         ).catch(error => message.error(error.message));
     }
@@ -33,8 +37,8 @@ function LoginItems(stateMethods) {
             key: "usermymall",
             menu: {
                 items: [
-                    { key: 'usermyorder', label: (<Link to="userorder"><span><ContainerTwoTone /> 我的订单</span></Link>), },
-                    { key: 'usermycommodities', label: (<Link to="usercommodities"><span><ShopTwoTone /> 我的商品</span></Link>), },
+                    { key: 'usermyorder', label: (<Link to={PAGEROUTES.userOrder}><span><ContainerTwoTone /> 我的订单</span></Link>), },
+                    { key: 'usermycommodities', label: (<Link to={PAGEROUTES.userCommodities}><span><ShopTwoTone /> 我的商品</span></Link>), },
                 ],
             },
         }
@@ -42,8 +46,8 @@ function LoginItems(stateMethods) {
     let itemUserhome = {
         title: (
             <Link
-                onClick={() => { setPageState("userhome") }}
-                to="userhome">
+                onClick={() => { setUserPageState(PAGESTATE.userHome) }}
+                to={PAGEROUTES.userHome}>
                 <span style={{ color: "#FFE78F", fontSize: " 5%" }} > 返回首页</span>
             </Link>),
         key: "userhome",
@@ -51,8 +55,8 @@ function LoginItems(stateMethods) {
     let itemUserlogin = {
         title: (
             <Link
-                onClick={() => { setPageState("userlogin") }}
-                to="userlogin">
+                onClick={() => { setUserPageState(PAGESTATE.userLogin) }}
+                to={PAGEROUTES.userLogin}>
                 <span style={{ color: "#FFE78F", fontSize: " 5%" }} > 登录</span>
             </Link>),
         key: "userlogin",
@@ -60,8 +64,8 @@ function LoginItems(stateMethods) {
     let itemUserRegister = {
         title: (
             <Link
-                onClick={() => { setPageState("userregister") }}
-                to="userregister">
+                onClick={() => { setUserPageState(PAGESTATE.userRegister) }}
+                to={PAGEROUTES.userRegister}>
                 <span style={{ color: "#FFE78F", fontSize: " 5%" }} > 注册</span>
             </Link>),
         key: "userregister",
@@ -78,16 +82,16 @@ function LoginItems(stateMethods) {
         ),
         key: "userExit",
     }
-    if (isLogin) {
+    if (isUserLogin) {
         item.push(itemUserExit)
     } else {
-        if (pageState === "userhome") {
+        if (userPageState === PAGESTATE.userHome) {
             item.push(itemUserlogin)
             item.push(itemUserRegister)
-        } else if (pageState === "userlogin") {
+        } else if (userPageState === PAGESTATE.userLogin) {
             item.push(itemUserhome)
             item.push(itemUserRegister)
-        } else if (pageState === "userregister") {
+        } else if (userPageState === PAGESTATE.userRegister) {
             item.push(itemUserhome)
             item.push(itemUserlogin)
         }
