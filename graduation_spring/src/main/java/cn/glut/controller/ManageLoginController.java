@@ -42,7 +42,7 @@ public class ManageLoginController {
             User user = (User)resultData.get("user");
             Date createTime = new Date();
             Map<String, Object> jwtMap = new HashMap();
-            jwtMap.put("token", user.getUserId());
+            jwtMap.put("managerToken", user.getUserId());
             jwtMap.put("ctreatTime", createTime);
             String token = JwtUtil.getToken(jwtMap);
             redisTemplate.opsForValue().set("userid" + user.getUserId(), createTime, 1, TimeUnit.DAYS);

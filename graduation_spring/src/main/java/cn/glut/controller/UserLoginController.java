@@ -39,10 +39,10 @@ public class UserLoginController {
         User user = userService.userLogin(userLogin.getUsername(), userLogin.getPassword());
         if (user != null && user.getState() == 0) {
             resultMsg.setMsg("你的账号已经被禁用，请联系管理员");
-            resultMsg.setState(2);//用户账号被禁用
+            resultMsg.setState(1);//禁用
         } else if (user != null && user.getIsLogin() == 1) {
             resultMsg.setMsg("用户已登录，请不要重复登录");
-            resultMsg.setState(3);//3:用户已登录
+            resultMsg.setState(2);//已登录
         } else if (user != null) {
             Date createTime = new Date();
             Map<String, Object> jwtMap = new HashMap();
@@ -53,14 +53,14 @@ public class UserLoginController {
             Map<String, String> tokenMap = new HashMap<>();
             user.setIsLogin(1);
             userService.updateUser(user);
-            tokenMap.put("token", token);
+            tokenMap.put("userToken", token);
             resultMsg.setMsg("登录成功");
             resultMsg.setState(200);
             resultMsg.setSuccess(true);
             resultMsg.setResultData(tokenMap);
         } else {
             resultMsg.setMsg("登录失败，请输入正确账号和密码");
-            resultMsg.setState(0);
+            resultMsg.setState(404);
         }
         return resultMsg;
     }

@@ -16,7 +16,11 @@ public class UserInterceptor implements HandlerInterceptor {
     JwtRedisUtil jwtRedisUtil;
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("token");
+        String token ="";
+        token= request.getHeader("userToken");
+        if(token==null){
+            token=request.getHeader("managerToken");
+        }
         if(jwtRedisUtil.isExistToken(token)){
             System.out.println("UserInterceptor.class：有效验证码");
             return true;
