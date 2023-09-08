@@ -1,0 +1,41 @@
+.userLoginBackground {
+    height: 100vh;
+    width: 100%;
+    background-image: url(/public/images/white3.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+.userLoginDivLeft{
+    margin-top: 50%;
+}
+.userLoginDivRight{
+    margin-top: 30%;
+}
+.userLoginSpanText {
+    color: rgb(13, 131, 235);
+    font-size: 400%;
+    font-family: "华文琥珀";
+    margin-left: -20%;
+}
+
+.userLoginHeaderButton {
+    position: absolute;
+    top: 20px;
+}
+
+.userLoginSpan {
+    color: #FFE78F;
+    font-size: 5%;
+}
+
+.goBackHomeInLogin {
+    color: rgb(243, 237, 238);
+    font-size: 5%;
+}
+
+.card-container {
+    background-color: #ddd;
+    height: 400px;
+}

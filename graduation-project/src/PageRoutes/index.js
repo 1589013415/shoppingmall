@@ -2,17 +2,17 @@ import React, { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from "react-router";
 import { BrowserRouter } from "react-router-dom"
 
-import { PAGEROUTES, PAGESTATE} from './compoents/const/index'
-import {UserMyContext} from "./compoents/MyContext/index"
-import UserPage from './pages/UserPage/index'
-import ManagePager from "./pages/ManagerPage/index"
-import Loading from './compoents/Loading/idnex';
-const UserHomne = lazy(() => import("./pages/UserHome"))
-const UserLogin = lazy(() => import("./pages/UserLogin"))
-const Userregister = lazy(() => import("./pages/UserRegister"))
-const UserOrder = lazy(() => import("./pages/UserOrder"))
-const UserCommodities = lazy(() => import("./pages/UserCommodities"))
+import { PAGEROUTES, PAGESTATE} from '../compoents/const/index'
+import UserPage from '../pages/UserPage/index'
+import ManagePager from "../pages/ManagerPage/index"
+import Loading from '../compoents/Loading/idnex';
+const UserHomne = lazy(() => import("../pages/UserHome"))
+const UserLogin = lazy(() => import("../pages/UserLogin"))
+const Userregister = lazy(() => import("../pages/UserRegister"))
+const UserOrder = lazy(() => import("../pages/UserOrder"))
+const UserCommodities = lazy(() => import("../pages/UserCommodities"))
 
+export const UserMyContext = React.createContext();
 /**
  * 
  * @returns 用户商城路由

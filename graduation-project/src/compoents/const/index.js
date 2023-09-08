@@ -23,16 +23,18 @@ export const PAGESTATE={
 }
 
 /**
- * 后端请求
- */
-export const AXIOSPATH={
-    userExistByGet:"/user/exit",
-}
-
-/**
  * token
  */
 export const TOKEN={
-    manager:"managerToken",
-    user:"userToken",
+    managerToken:"managerToken",
+    userToken:"userToken",
+}
+
+/**
+ * 用户账号的状态
+ */
+export const USERACCOUNTSTATE={
+    Active:0,//激活
+    Forbidden:1,//禁用
+    Alreadylogin:2,//已登录
 }

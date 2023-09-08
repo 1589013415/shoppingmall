@@ -7,15 +7,15 @@ import { UserOutlined, ShopTwoTone, ContainerTwoTone } from '@ant-design/icons';
 import axios from 'axios';
 import cookie from 'js-cookie';
 
-import { UserMyContext } from '../../MyContext';
-import { PAGEROUTES,AXIOSPATH, PAGESTATE,TOKEN } from '../../const';
+import { UserMyContext } from "../../../PageRoutes"
+import { PAGEROUTES,PAGESTATE,TOKEN } from '../../const';
 
 function LoginItems() {
     const navigate = useNavigate()
     const { userState } = useContext(UserMyContext);
     const { isUserLogin, setIsUserLogin, userPageState, setUserPageState } = userState;
     let exit = () => {
-        axios.get(AXIOSPATH.userExistByGet, { headers: { token: cookie.get(TOKEN.user) } }).then(
+        axios.get("/user/exit", { headers: { token: cookie.get(TOKEN.userToken) } }).then(
             response => {
                 message.success({
                     content: response.data.msg,
@@ -27,7 +27,7 @@ function LoginItems() {
                 setIsUserLogin(false);
                 setUserPageState(PAGESTATE.userHome)
                 navigate(PAGEROUTES.userHome);
-                cookie.remove(TOKEN.user);
+                cookie.remove(TOKEN.userToken);
             }
         ).catch(error => message.error(error.message));
     }
