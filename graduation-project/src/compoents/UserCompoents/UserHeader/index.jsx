@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Image, Col, Row, Breadcrumb } from 'antd';
 
 import "./index.css"

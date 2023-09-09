@@ -13,17 +13,15 @@ import { PAGEROUTES,PAGESTATE,TOKEN } from '../../const';
 function LoginItems() {
     const navigate = useNavigate()
     const { userState } = useContext(UserMyContext);
-    const { isUserLogin, setIsUserLogin, userPageState, setUserPageState } = userState;
+    const { isUserLogin, setIsUserLogin, userPageState, setUserPageState,messageApi } = userState;
     let exit = () => {
         axios.get("/user/exit", { headers: { token: cookie.get(TOKEN.userToken) } }).then(
             response => {
-                message.success({
-                    content: response.data.msg,
-                    className: 'custom-class', style: {
-                        marginTop: '20vh',
-                        fontSize: "110%",
-                    },
-                }, 0.8)
+                const {msg}=response.data
+                messageApi.open({
+                    type: 'warning',
+                    content: msg,
+                });
                 setIsUserLogin(false);
                 setUserPageState(PAGESTATE.userHome)
                 navigate(PAGEROUTES.userHome);
