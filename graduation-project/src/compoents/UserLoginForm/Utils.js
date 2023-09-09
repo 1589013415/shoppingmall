@@ -113,6 +113,7 @@ const FormItem = (isLoginFalg, setIsLoginFalg, form) => {
     )
 }
 
+//登录表单提交
 const OnFinishLogin = async (param) => {
     const {navigate,form,formData,userState}=param
     const {messageApi}=userState
@@ -140,47 +141,6 @@ const OnFinishLogin = async (param) => {
             }
         }
     ).catch(error => message.error(error.message))
-}
-
-const OnFinishReset = async (event) => {
-    await axios.post("/user/resetpassword", event).then(
-        respoense => {
-            if (respoense.data.success) {
-                this.FormRest();
-                message.success({
-                    content: respoense.data.msg,
-                    className: 'custom-class', style: {
-                        marginTop: '20vh',
-                        fontSize: "110%",
-                    },
-                }, 0.8)
-                cookies.remove("token")
-            } else {
-                message.error({
-                    content: respoense.data.msg,
-                    className: 'custom-class', style: {
-                        marginTop: '20vh',
-                        fontSize: "110%",
-                        color: "red"
-                    },
-                }, 0.8)
-            }
-        }
-    ).catch(error => message.error(error.message))
-}
-
-const OnFinishFailed = (event) => {
-    message.error(event)
-}
-
-const formRest = (form) => {
-    return () => {
-        form.current.resetFields()
-    }
-}
-
-const OnPressEnterAccount = (inputRef) => {
-    inputRef.focus();
 }
 
 //重复登录
@@ -223,6 +183,50 @@ const ShowConfirm = (param) => {
         },
     });
 }
+
+//忘记密码表单提交
+const OnFinishReset = async (event) => {
+    await axios.post("/user/resetpassword", event).then(
+        respoense => {
+            if (respoense.data.success) {
+                this.FormRest();
+                message.success({
+                    content: respoense.data.msg,
+                    className: 'custom-class', style: {
+                        marginTop: '20vh',
+                        fontSize: "110%",
+                    },
+                }, 0.8)
+                cookies.remove("token")
+            } else {
+                message.error({
+                    content: respoense.data.msg,
+                    className: 'custom-class', style: {
+                        marginTop: '20vh',
+                        fontSize: "110%",
+                        color: "red"
+                    },
+                }, 0.8)
+            }
+        }
+    ).catch(error => message.error(error.message))
+}
+
+//表单提交失败
+const OnFinishFailed = (event) => {
+    message.error(event)
+}
+
+const formRest = (form) => {
+    return () => {
+        form.current.resetFields()
+    }
+}
+
+const OnPressEnterAccount = (inputRef) => {
+    inputRef.focus();
+}
+
 
 const GetVerify = async (form) => {
     let userName = form.getFieldValue("username");
