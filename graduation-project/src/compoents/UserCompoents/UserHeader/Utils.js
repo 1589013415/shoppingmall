@@ -1,23 +1,23 @@
-import React, { useContext} from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 
 import { Button, message } from 'antd';
-import { UserOutlined, ShopTwoTone, ContainerTwoTone } from '@ant-design/icons';
+import { UserOutlined, ShopTwoTone, ContainerTwoTone,UsbTwoTone } from '@ant-design/icons';
 
 import axios from 'axios';
 import cookie from 'js-cookie';
 
 import { UserMyContext } from "../../../PageRoutes"
-import { PAGEROUTES,PAGESTATE,TOKEN } from '../../const';
+import { PAGEROUTES, PAGESTATE, TOKEN } from '../../const';
 
 function LoginItems() {
     const navigate = useNavigate()
     const { userState } = useContext(UserMyContext);
-    const { isUserLogin, setIsUserLogin, userPageState, setUserPageState,messageApi } = userState;
+    const { isUserLogin, setIsUserLogin, userPageState, setUserPageState, messageApi } = userState;
     let exit = () => {
         axios.get("/user/exit", { headers: { token: cookie.get(TOKEN.userToken) } }).then(
             response => {
-                const {msg}=response.data
+                const { msg } = response.data
                 messageApi.open({
                     type: 'warning',
                     content: msg,
@@ -35,8 +35,23 @@ function LoginItems() {
             key: "usermymall",
             menu: {
                 items: [
-                    { key: 'usermyorder', label: (<Link to={PAGEROUTES.userOrder}><span><ContainerTwoTone /> 我的订单</span></Link>), },
-                    { key: 'usermycommodities', label: (<Link to={PAGEROUTES.userCommodities}><span><ShopTwoTone /> 我的商品</span></Link>), },
+                    {
+                        key: 'usermyorder',
+                        label: (<Link to={PAGEROUTES.userOrder}>
+                            <ContainerTwoTone /> 我的订单</Link>)
+                    },
+                    {
+                        key: 'usermycommodities',
+                        label: (<Link to={PAGEROUTES.userCommodities}>
+                            <ShopTwoTone /> 我的商品</Link>)
+                    },
+                    {
+                        key: 'usermycenter',
+                        label: (<span
+                            onClick={() => {/*TODO 个人中心按钮事件*/ }}
+                           >
+                            <UsbTwoTone /> 个人中心 </span>)
+                    },
                 ],
             },
         }
@@ -90,16 +105,16 @@ function LoginItems() {
         key: "userExit",
     }
     if (isUserLogin) {
-        if(userPageState!==PAGESTATE.userLogin&&userPageState!==PAGESTATE.userRegister){
-        item.push(itemUserLoginPage)
-        item.push(itemUserExit)
-        }else{
+        if (userPageState !== PAGESTATE.userLogin && userPageState !== PAGESTATE.userRegister) {
+            item.push(itemUserLoginPage)
+            item.push(itemUserExit)
+        } else {
             item.push(itemUserhome)
         }
-        if(userPageState===PAGESTATE.userLogin){
+        if (userPageState === PAGESTATE.userLogin) {
             item.push(itemUserRegister)
         }
-        if(userPageState===PAGESTATE.userRegister){
+        if (userPageState === PAGESTATE.userRegister) {
             item.push(itemUserlogin)
         }
     } else {
@@ -118,5 +133,5 @@ function LoginItems() {
 }
 
 export const Utils = {
-    LoginItems
+    LoginItems,
 };

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, Col, Row, Breadcrumb } from 'antd';
+import { Image, Col, Row, Breadcrumb, Space } from 'antd';
 
 import "./index.css"
 import { Utils } from "./Utils"
@@ -16,13 +16,11 @@ function LeftHeader() {
 }
 
 function RightHeader() {
-        return (
-            <Col span={4} offset={4}>
-                <div className='headerNavDiv'>
-                    <Breadcrumb items={Utils.LoginItems()} />
-                </div>
-            </Col>
-        )
+    return (
+        <Col span={4} offset={4}>
+            <Space><Breadcrumb items={Utils.LoginItems()} /></Space>
+        </Col>
+    )
 }
 
 
