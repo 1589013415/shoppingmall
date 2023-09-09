@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Col, Row } from "antd"
-import LoginForm from "../../compoents/UserLoginCompoents"
+import UserLoginForm from "../../compoents/UserLoginForm"
 import "./index.css"
 
 export const LoginConext = React.createContext();
@@ -18,7 +18,7 @@ export default function UserLogin() {
         </Col>
         <Col span={9} offset={2}>
           <div className='userLoginDivRight'></div>
-            <LoginForm />
+            <UserLoginForm />
         </Col>
       </Row>
     </div>

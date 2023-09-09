@@ -39,8 +39,8 @@ public class UserLoginController {
         User user = userService.userLogin(userLogin.getUsername(), userLogin.getPassword());
         if (user != null && user.getState() == 0) {
             resultMsg.setMsg("你的账号已经被禁用，请联系管理员");
-            resultMsg.setState(1);//禁用
-        } else if (user != null && user.getIsLogin() == 1) {
+            resultMsg.setState(0);//禁用
+        } else if (user != null && user.getIsLogin() == 2) {
             resultMsg.setMsg("用户已登录，请不要重复登录");
             resultMsg.setState(2);//已登录
         } else if (user != null) {
@@ -51,7 +51,7 @@ public class UserLoginController {
             String token = JwtUtil.getToken(jwtMap);
             redisTemplate.opsForValue().set("userid" + user.getUserId(), createTime, 1, TimeUnit.DAYS);
             Map<String, String> tokenMap = new HashMap<>();
-            user.setIsLogin(1);
+            user.setIsLogin(2);
             userService.updateUser(user);
             tokenMap.put("userToken", token);
             resultMsg.setMsg("登录成功");

@@ -2,6 +2,8 @@ import React, { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from "react-router";
 import { BrowserRouter } from "react-router-dom"
 
+import {message} from 'antd';
+
 import { PAGEROUTES, PAGESTATE} from '../compoents/const/index'
 import UserPage from '../pages/UserPage/index'
 import ManagePager from "../pages/ManagerPage/index"
@@ -44,11 +46,13 @@ export default function PageRoutes() {
     //用户商城属性
     const [isUserLogin, setIsUserLogin] = React.useState(false)
     const [userPageState, setUserPageState] = React.useState(PAGESTATE.userHome)
-    let userState = { isUserLogin, setIsUserLogin, userPageState, setUserPageState }
+    const [messageApi, contextHolder] = message.useMessage();
+    let userState = { isUserLogin, setIsUserLogin, userPageState, setUserPageState,messageApi, contextHolder}
     //TODO 管理系统属性
     return (
         <BrowserRouter>
             <UserMyContext.Provider value={{userState}}>
+                {contextHolder}
                 <Routes>
                     {UserRoutes()}
                     {ManagerRoutes()}

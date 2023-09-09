@@ -1,4 +1,4 @@
-import { useRef, Fragment } from 'react'
+import { useRef, Fragment} from 'react'
 
 import { Form, Input, Button, Space, message, Modal } from "antd"
 
@@ -114,26 +114,27 @@ const FormItem = (isLoginFalg, setIsLoginFalg, form) => {
 }
 
 const OnFinishLogin = async (param) => {
-    const {navigate,form,formData}=param
+    const {navigate,form,formData,userState}=param
+    const {messageApi}=userState
     await axios.post(`/user/login`, formData).then(
         response => {
-            const { state,success } = response.data
+            const { state,success,msg } = response.data
             if (success) {
+                messageApi.open({
+                    type: 'success',
+                    content:msg,
+                  });
                 cookies.set(TOKEN.userToken, response.data.resultData.token, { expires: 1 });
                 navigate(PAGEROUTES.userHome)
                 formRest(form);
             } else {
-                if (USERACCOUNTSTATE.Alreadylogin === state) {//1:用户激活; //2用户账号被禁用；//3：用户已登录
+                if (USERACCOUNTSTATE.Alreadylogin === state) {
                     ShowConfirm(param)
-                } else if (0 === state || 2 === state) {
-                    message.error({
-                        content: response.data.msg,
-                        className: 'custom-class', style: {
-                            marginTop: '20vh',
-                            fontSize: "110%",
-                            color: "red"
-                        },
-                    }, 0.8)
+                } else {
+                    messageApi.open({
+                        type: 'warning',
+                        content:msg,
+                      });
                 }
 
             }
@@ -185,7 +186,7 @@ const OnPressEnterAccount = (inputRef) => {
 //重复登录
 const ShowConfirm = (param) => {
     const {navigate,formData,userState,form}=param
-    const {setIsUserLogin}=userState;
+    const {setIsUserLogin,messageApi}=userState;
     Modal.confirm({
         title: '用户已登录，是否重复登录',
         okText: '确定',
@@ -194,24 +195,24 @@ const ShowConfirm = (param) => {
         onOk: async () => {
                 await axios.post(`/user/relogin`, formData).then(
                     response => {
-                        const { state } = response.data
-                        if (response.data.success) {
-                            cookies.set(TOKEN.userToken, response.data.resultData.token, { expires: 1 });
+                        const { state,success,resultData,msg} = response.data
+                        if (success) {
+                            messageApi.open({
+                                type: 'success',
+                                content:msg,
+                              });
+                            cookies.set(TOKEN.userToken, resultData.token, { expires: 1 });
                             navigate(PAGEROUTES.userHome)
                             formRest(form);
                             setIsUserLogin(true)
                         } else {
-                            if (3 === state) {//1:用户激活; //2用户账号被禁用；//3：用户已登录
+                            if (USERACCOUNTSTATE.Alreadylogin=== state) {
                                 ShowConfirm(param)
-                            } else if (0 === state || 2 === state) {
-                                message.error({
-                                    content: response.data.msg,
-                                    className: 'custom-class', style: {
-                                        marginTop: '20vh',
-                                        fontSize: "110%",
-                                        color: "red"
-                                    },
-                                }, 0.8)
+                            } else {
+                                messageApi.open({
+                                    type: 'warning',
+                                    content:msg,
+                                  });
                             }
 
                         }

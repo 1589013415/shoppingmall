@@ -34,7 +34,7 @@ export const TOKEN={
  * 用户账号的状态
  */
 export const USERACCOUNTSTATE={
-    Active:0,//激活
-    Forbidden:1,//禁用
+    Forbidden:0,//禁用
+    notLogin:1,//激活
     Alreadylogin:2,//已登录
 }

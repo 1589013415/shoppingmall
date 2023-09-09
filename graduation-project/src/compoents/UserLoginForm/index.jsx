@@ -6,7 +6,7 @@ import { Card, Form} from "antd"
 import { UserMyContext } from '../../PageRoutes';
 import {Utils} from "./Utils"
 
-export default function LoginForm() {
+export default function UserLoginForm() {
   const [isLoginFalg, setIsLoginFalg] =React.useState(true)
   const [form] = Form.useForm();
   const { userState } = useContext(UserMyContext);

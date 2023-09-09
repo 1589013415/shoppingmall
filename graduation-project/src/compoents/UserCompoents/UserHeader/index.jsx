@@ -1,7 +1,6 @@
-import React, { useContext } from 'react'
+import React from 'react'
 import { Image, Col, Row, Breadcrumb } from 'antd';
 
-import { UserMyContext } from "../../../PageRoutes"
 import "./index.css"
 import { Utils } from "./Utils"
 
@@ -17,17 +16,6 @@ function LeftHeader() {
 }
 
 function RightHeader() {
-    const { userState } = useContext(UserMyContext)
-    let { isUserLogin } = userState
-    if (isUserLogin) {
-        return (
-            <Col span={3} offset={5}>
-                <div className='headerNavDiv'>
-                    <Breadcrumb items={Utils.LoginItems()} />
-                </div>
-            </Col>
-        )
-    } else {
         return (
             <Col span={4} offset={4}>
                 <div className='headerNavDiv'>
@@ -35,7 +23,6 @@ function RightHeader() {
                 </div>
             </Col>
         )
-    }
 }
 
 
