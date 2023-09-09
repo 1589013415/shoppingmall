@@ -2,7 +2,7 @@ import { useRef, Fragment} from 'react'
 
 import { Form, Input, Button, Space, message, Modal } from "antd"
 
-import { PAGEROUTES, TOKEN,USERACCOUNTSTATE } from "../const"
+import { PAGEROUTES, PAGESTATE, TOKEN,USERACCOUNTSTATE } from "../const"
 import axios from "axios";
 import cookies from "js-cookie"
 
@@ -116,7 +116,7 @@ const FormItem = (isLoginFalg, setIsLoginFalg, form) => {
 //登录表单提交
 const OnFinishLogin = async (param) => {
     const {navigate,form,formData,userState}=param
-    const {messageApi}=userState
+    const {messageApi,setIsUserLogin,setUserPageState}=userState
     await axios.post(`/user/login`, formData).then(
         response => {
             const { state,success,msg } = response.data
@@ -127,7 +127,9 @@ const OnFinishLogin = async (param) => {
                   });
                 cookies.set(TOKEN.userToken, response.data.resultData.token, { expires: 1 });
                 navigate(PAGEROUTES.userHome)
-                formRest(form);
+                formRest(form)
+                setIsUserLogin(true);
+                setUserPageState(PAGESTATE.userHome)
             } else {
                 if (USERACCOUNTSTATE.Alreadylogin === state) {
                     ShowConfirm(param)
@@ -137,7 +139,6 @@ const OnFinishLogin = async (param) => {
                         content:msg,
                       });
                 }
-
             }
         }
     ).catch(error => message.error(error.message))
@@ -146,7 +147,7 @@ const OnFinishLogin = async (param) => {
 //重复登录
 const ShowConfirm = (param) => {
     const {navigate,formData,userState,form}=param
-    const {setIsUserLogin,messageApi}=userState;
+    const {setIsUserLogin,setUserPageState,messageApi}=userState;
     Modal.confirm({
         title: '用户已登录，是否重复登录',
         okText: '确定',
@@ -165,6 +166,7 @@ const ShowConfirm = (param) => {
                             navigate(PAGEROUTES.userHome)
                             formRest(form);
                             setIsUserLogin(true)
+                            setUserPageState(PAGESTATE.userHome)
                         } else {
                             if (USERACCOUNTSTATE.Alreadylogin=== state) {
                                 ShowConfirm(param)

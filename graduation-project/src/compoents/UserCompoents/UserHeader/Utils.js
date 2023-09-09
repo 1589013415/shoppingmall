@@ -73,9 +73,9 @@ function LoginItems() {
     let itemUserLoginPage = {
         title: (
             <Link
-                onClick={() => { setUserPageState(PAGESTATE.userHome) }}
-                to={PAGEROUTES.userRegister}>
-                <span style={{ color: "#FFE78F", fontSize: " 5%" }} > 登录界面</span>
+                onClick={() => { setUserPageState(PAGESTATE.userLogin) }}
+                to={PAGEROUTES.userLogin}>
+                <span style={{ color: "#FFE78F", fontSize: " 5%" }} > 重新登录</span>
             </Link>),
         key: "userregister",
     }
@@ -92,8 +92,18 @@ function LoginItems() {
         key: "userExit",
     }
     if (isUserLogin) {
+        if(userPageState!==PAGESTATE.userLogin&&userPageState!==PAGESTATE.userRegister){
         item.push(itemUserLoginPage)
         item.push(itemUserExit)
+        }else{
+            item.push(itemUserhome)
+        }
+        if(userPageState===PAGESTATE.userLogin){
+            item.push(itemUserRegister)
+        }
+        if(userPageState===PAGESTATE.userRegister){
+            item.push(itemUserlogin)
+        }
     } else {
         if (userPageState === PAGESTATE.userHome) {
             item.push(itemUserlogin)

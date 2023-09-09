@@ -10,6 +10,7 @@ export default function UserLoginForm() {
   const [isLoginFalg, setIsLoginFalg] =React.useState(true)
   const [form] = Form.useForm();
   const { userState } = useContext(UserMyContext);
+  const {isUserLogin}=userState
   const navigate = useNavigate()
   let loginParm={userState,navigate,form}
   let onFinish=(formData)=>{
@@ -17,7 +18,7 @@ export default function UserLoginForm() {
   }
   return (
       <Card
-          title={isLoginFalg?"登录":"重置密码"}
+          title={isLoginFalg?(!isUserLogin?"登录":"重新登录"):"重置密码"}
           bordered={false}
           headStyle={Utils.headStyle}
           bodyStyle={Utils.bodyStyle}
