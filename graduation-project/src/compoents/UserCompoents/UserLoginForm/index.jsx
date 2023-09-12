@@ -1,9 +1,9 @@
-import React ,{useContext} from 'react'
+import React ,{useContext,useEffect} from 'react'
 import { useNavigate } from 'react-router-dom';
 
 import { Card, Form} from "antd"
 
-import { UserMyContext } from '../../PageRoutes';
+import { UserMyContext } from '../../../PageRoutes';
 import {Utils} from "./Utils"
 
 export default function UserLoginForm() {
@@ -16,6 +16,9 @@ export default function UserLoginForm() {
   let onFinish=(formData)=>{
     isLoginFalg?Utils.OnFinishLogin({...loginParm,formData}):Utils.OnFinishReset({...loginParm,formData})
   }
+  useEffect(()=>{
+    form.resetFields()
+  },[isLoginFalg,form])
   return (
       <Card
           title={isLoginFalg?(!isUserLogin?"登录":"重新登录"):"重置密码"}

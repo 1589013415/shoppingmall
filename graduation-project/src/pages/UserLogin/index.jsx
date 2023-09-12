@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Col, Row } from "antd"
-import UserLoginForm from "../../compoents/UserLoginForm"
+import UserLoginForm from "../../compoents/UserCompoents/UserLoginForm"
 import "./index.css"
 
 export const LoginConext = React.createContext();

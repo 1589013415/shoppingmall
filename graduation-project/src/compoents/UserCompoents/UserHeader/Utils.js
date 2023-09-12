@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate,useLocation} from 'react-router-dom';
 
 import { Button, message } from 'antd';
 import { UserOutlined, ShopTwoTone, ContainerTwoTone,UsbTwoTone } from '@ant-design/icons';
@@ -8,12 +8,13 @@ import axios from 'axios';
 import cookie from 'js-cookie';
 
 import { UserMyContext } from "../../../PageRoutes"
-import { PAGEROUTES, PAGESTATE, TOKEN } from '../../const';
+import { PAGEROUTES,TOKEN } from '../../const';
 
 function LoginItems() {
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
     const { userState } = useContext(UserMyContext);
-    const { isUserLogin, setIsUserLogin, userPageState, setUserPageState, messageApi } = userState;
+    const { isUserLogin, setIsUserLogin, messageApi } = userState;
     let exit = () => {
         axios.get("/user/exit", { headers: { token: cookie.get(TOKEN.userToken) } }).then(
             response => {
@@ -23,7 +24,6 @@ function LoginItems() {
                     content: msg,
                 });
                 setIsUserLogin(false);
-                setUserPageState(PAGESTATE.userHome)
                 navigate(PAGEROUTES.userHome);
                 cookie.remove(TOKEN.userToken);
             }
@@ -59,7 +59,6 @@ function LoginItems() {
     let itemUserhome = {
         title: (
             <Link
-                onClick={() => { setUserPageState(PAGESTATE.userHome) }}
                 to={PAGEROUTES.userHome}>
                 <span style={{ color: "#FFE78F", fontSize: " 5%" }} > 返回首页</span>
             </Link>),
@@ -68,7 +67,6 @@ function LoginItems() {
     let itemUserlogin = {
         title: (
             <Link
-                onClick={() => { setUserPageState(PAGESTATE.userLogin) }}
                 to={PAGEROUTES.userLogin}>
                 <span style={{ color: "#FFE78F", fontSize: " 5%" }} > 登录</span>
             </Link>),
@@ -77,7 +75,6 @@ function LoginItems() {
     let itemUserRegister = {
         title: (
             <Link
-                onClick={() => { setUserPageState(PAGESTATE.userRegister) }}
                 to={PAGEROUTES.userRegister}>
                 <span style={{ color: "#FFE78F", fontSize: " 5%" }} > 注册</span>
             </Link>),
@@ -86,7 +83,6 @@ function LoginItems() {
     let itemUserLoginPage = {
         title: (
             <Link
-                onClick={() => { setUserPageState(PAGESTATE.userLogin) }}
                 to={PAGEROUTES.userLogin}>
                 <span style={{ color: "#FFE78F", fontSize: " 5%" }} > 重新登录</span>
             </Link>),
@@ -104,29 +100,30 @@ function LoginItems() {
         ),
         key: "userExit",
     }
+    let currentRoute=location.pathname;
     if (isUserLogin) {
-        if (userPageState !== PAGESTATE.userLogin && userPageState !== PAGESTATE.userRegister) {
+        if (currentRoute !== PAGEROUTES.userLogin && currentRoute !== PAGEROUTES.userRegister) {
             item.push(itemUserLoginPage)
             item.push(itemUserExit)
         } else {
             item.push(itemUserhome)
         }
-        if (userPageState === PAGESTATE.userLogin) {
+        if (currentRoute === PAGEROUTES.userLogin) {
             item.push(itemUserRegister)
         }
-        if (userPageState === PAGESTATE.userRegister) {
+        if (currentRoute === PAGEROUTES.userRegister) {
             item.push(itemUserlogin)
         }
     } else {
-        if (userPageState === PAGESTATE.userHome) {
-            item.push(itemUserlogin)
-            item.push(itemUserRegister)
-        } else if (userPageState === PAGESTATE.userLogin) {
+        if(currentRoute === PAGEROUTES.userLogin){
             item.push(itemUserhome)
             item.push(itemUserRegister)
-        } else if (userPageState === PAGESTATE.userRegister) {
+        }else if(currentRoute === PAGEROUTES.userRegister){
             item.push(itemUserhome)
             item.push(itemUserlogin)
+        }else{
+            item.push(itemUserlogin)
+            item.push(itemUserRegister)
         }
     }
     return item

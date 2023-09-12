@@ -3,30 +3,25 @@ import { useNavigate } from 'react-router-dom';
 
 import { Card, Form} from "antd"
 
-import { UserMyContext } from '../../PageRoutes';
+import { UserMyContext } from '../../../PageRoutes';
 import {Utils} from "./Utils"
 
 export default function UserLoginForm() {
-  const [isLoginFalg, setIsLoginFalg] =React.useState(true)
+const { userState } = useContext(UserMyContext);
   const [form] = Form.useForm();
-  const { userState } = useContext(UserMyContext);
-  const {isUserLogin}=userState
   const navigate = useNavigate()
-  let loginParm={userState,navigate,form}
-  let onFinish=(formData)=>{
-    isLoginFalg?Utils.OnFinishLogin({...loginParm,formData}):Utils.OnFinishReset({...loginParm,formData})
-  }
+  let registerParm={navigate,form,userState}
   return (
       <Card
-          title={isLoginFalg?(!isUserLogin?"登录":"重新登录"):"重置密码"}
+          title="注册"
           bordered={false}
           headStyle={Utils.headStyle}
           bodyStyle={Utils.bodyStyle}
-          style={{width: 360}}
+          style={{width: 430}}
       >
           <Form
               form={form}
-              onFinish={onFinish}
+              onFinish={Utils.onFinish}
               onFinishFailed={Utils.OnFinishFailed}
               labelCol={{span: 5}}
               wrapperCol={{span: 19}}
@@ -34,7 +29,7 @@ export default function UserLoginForm() {
               name="basic"
               autoComplete="off"
           >  
-          {Utils.FormItem(isLoginFalg, setIsLoginFalg,form)}
+          {Utils.FormItem(registerParm)}
           </Form>
       </Card>
   )

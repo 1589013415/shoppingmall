@@ -1,8 +1,8 @@
-import { useRef, Fragment} from 'react'
+import { useRef, Fragment } from 'react'
 
 import { Form, Input, Button, Space, message, Modal } from "antd"
 
-import { PAGEROUTES, PAGESTATE, TOKEN,USERACCOUNTSTATE } from "../const"
+import { PAGEROUTES, TOKEN, USERACCOUNTSTATE } from "../../const"
 import axios from "axios";
 import cookies from "js-cookie"
 
@@ -23,7 +23,7 @@ const bodyStyle = {
 
 const FormItem = (isLoginFalg, setIsLoginFalg, form) => {
     let passwordInputRef = useRef();
-    let verifyCOdeInput=useRef();
+    let verifyCOdeInput = useRef();
     return (
         <Fragment>
             <Form.Item
@@ -67,7 +67,7 @@ const FormItem = (isLoginFalg, setIsLoginFalg, form) => {
                 ]}
                 hasFeedback
             >
-                <Input placeholder='区分大小写' ref={c => verifyCOdeInput = c}  onPressEnter={() => OnPressEnterAccount(passwordInputRef)}/>
+                <Input placeholder='区分大小写' ref={c => verifyCOdeInput = c} onPressEnter={() => OnPressEnterAccount(passwordInputRef)} />
             </Form.Item> : null}
             <Form.Item
                 label="密码："
@@ -91,22 +91,22 @@ const FormItem = (isLoginFalg, setIsLoginFalg, form) => {
                 <Input.Password placeholder='请输入你的密码' ref={e => passwordInputRef = e} />
             </Form.Item>
             <Form.Item
-                wrapperCol={isLoginFalg?{offset: 8,span: 16}:{offset: 12,span: 12}}
+                wrapperCol={isLoginFalg ? { offset: 8, span: 16 } : { offset: 12, span: 12 }}
             >
                 <Space>
                     {isLoginFalg ?
                         <Fragment>
                             <Button type='link' size="small" >
-                                <span className='forgetPassword' onClick={() => { setIsLoginFalg(false) }}>忘记密码</span>
+                                <span className='forgetPassword' onClick={() => setIsLoginFalg(false)}>忘记密码</span>
                             </Button>
                             <Button type="primary" htmlType="submit"> 登录</Button>
-                            <Button htmlType="button" onClick={() => formRest(form)} >取消</Button>
+                            <Button htmlType="button" onClick={() => FormRest(form)} >取消</Button>
                         </Fragment>
                         : <Fragment>
                             <Button type="primary" htmlType="submit">重置</Button>
-                            <Button htmlType="button" onClick={() => { setIsLoginFalg(true) }} >取消重置</Button>
+                            <Button htmlType="button" onClick={() => {setIsLoginFalg(true) }} >取消重置</Button>
                         </Fragment>}
- 
+
                 </Space>
             </Form.Item>
         </Fragment>
@@ -115,71 +115,72 @@ const FormItem = (isLoginFalg, setIsLoginFalg, form) => {
 
 //登录表单提交
 const OnFinishLogin = async (param) => {
-    const {navigate,form,formData,userState}=param
-    const {messageApi,setIsUserLogin,setUserPageState}=userState
+    const { navigate, form, formData, userState } = param
+    const { messageApi, setIsUserLogin} = userState
     await axios.post(`/user/login`, formData).then(
         response => {
-            const { state,success,msg } = response.data
+            const { state, success, msg } = response.data
             if (success) {
                 messageApi.open({
                     type: 'success',
-                    content:msg,
-                  });
+                    content: msg,
+                });
                 cookies.set(TOKEN.userToken, response.data.resultData.token, { expires: 1 });
                 navigate(PAGEROUTES.userHome)
-                formRest(form)
+                FormRest(form)
                 setIsUserLogin(true);
-                setUserPageState(PAGESTATE.userHome)
             } else {
                 if (USERACCOUNTSTATE.Alreadylogin === state) {
                     ShowConfirm(param)
                 } else {
                     messageApi.open({
                         type: 'warning',
-                        content:msg,
-                      });
+                        content: msg,
+                    });
                 }
             }
         }
-    ).catch(error => message.error(error.message))
+    ).catch(error => messageApi.open({
+        type: 'warning',
+        content: error.message,
+    }))
 }
 
 //重复登录
 const ShowConfirm = (param) => {
-    const {navigate,formData,userState,form}=param
-    const {setIsUserLogin,setUserPageState,messageApi}=userState;
+    const { navigate, formData, userState, form } = param
+    const { setIsUserLogin, messageApi } = userState;
     Modal.confirm({
         title: '用户已登录，是否重复登录',
         okText: '确定',
         okType: 'danger',
         cancelText: '取消',
         onOk: async () => {
-                await axios.post(`/user/relogin`, formData).then(
-                    response => {
-                        const { state,success,resultData,msg} = response.data
-                        if (success) {
-                            messageApi.open({
-                                type: 'success',
-                                content:msg,
-                              });
-                            cookies.set(TOKEN.userToken, resultData.token, { expires: 1 });
-                            navigate(PAGEROUTES.userHome)
-                            formRest(form);
-                            setIsUserLogin(true)
-                            setUserPageState(PAGESTATE.userHome)
+            await axios.post(`/user/relogin`, formData).then(
+                response => {
+                    const { state, success, resultData, msg } = response.data
+                    if (success) {
+                        messageApi.open({
+                            type: 'success',
+                            content: msg,
+                        });
+                        cookies.set(TOKEN.userToken, resultData.token, { expires: 1 });
+                        navigate(PAGEROUTES.userHome)
+                        FormRest(form);
+                        setIsUserLogin(true)
+                    } else {
+                        if (USERACCOUNTSTATE.Alreadylogin === state) {
+                            ShowConfirm(param)
                         } else {
-                            if (USERACCOUNTSTATE.Alreadylogin=== state) {
-                                ShowConfirm(param)
-                            } else {
-                                messageApi.open({
-                                    type: 'warning',
-                                    content:msg,
-                                  });
-                            }
-
+                            messageApi.open({
+                                type: 'warning',
+                                content: msg,
+                            });
                         }
+
                     }
-                ).catch (error => message.error(error.message))
+                }
+            ).catch(error => messageApi.open({ type: 'warning', content: error.message }))
         },
         onCancel() {
         },
@@ -187,31 +188,27 @@ const ShowConfirm = (param) => {
 }
 
 //忘记密码表单提交
-const OnFinishReset = async (event) => {
-    await axios.post("/user/resetpassword", event).then(
+const OnFinishReset = async (param) => {
+    const {  formData, userState } = param
+    const { messageApi } = userState
+    await axios.post("/user/resetpassword", formData).then(
         respoense => {
-            if (respoense.data.success) {
+            const {success,msg}= respoense.data
+            if (success) {
                 this.FormRest();
-                message.success({
-                    content: respoense.data.msg,
-                    className: 'custom-class', style: {
-                        marginTop: '20vh',
-                        fontSize: "110%",
-                    },
-                }, 0.8)
-                cookies.remove("token")
+                messageApi.open({
+                    type: 'success',
+                    content: msg,
+                });
+                cookies.remove(TOKEN.userToken)
             } else {
-                message.error({
-                    content: respoense.data.msg,
-                    className: 'custom-class', style: {
-                        marginTop: '20vh',
-                        fontSize: "110%",
-                        color: "red"
-                    },
-                }, 0.8)
+                messageApi.open({
+                    type: 'warning',
+                    content: msg,
+                });
             }
         }
-    ).catch(error => message.error(error.message))
+    ).catch(error =>messageApi.open({ type: 'warning', content: error.message }))
 }
 
 //表单提交失败
@@ -219,10 +216,8 @@ const OnFinishFailed = (event) => {
     message.error(event)
 }
 
-const formRest = (form) => {
-    return () => {
-        form.current.resetFields()
-    }
+const FormRest = (form) => {
+    form.resetFields()
 }
 
 const OnPressEnterAccount = (inputRef) => {

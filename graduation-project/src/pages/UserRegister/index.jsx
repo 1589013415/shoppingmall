@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Col, Row } from "antd"
 
+import UserRegisyter from "../../compoents/UserCompoents/UserRegisterForm"
 import "./index.css"
 
 export default function Userregister() {
@@ -16,7 +17,7 @@ export default function Userregister() {
       </Col>
       <Col span={9} offset={2}>
         <div className='userRegisterDivRight'></div>
-          这是注册Form单
+        <UserRegisyter />
       </Col>
     </Row>
   </div>

@@ -4,7 +4,7 @@ import { BrowserRouter } from "react-router-dom"
 
 import {message} from 'antd';
 
-import { PAGEROUTES, PAGESTATE} from '../compoents/const/index'
+import {PAGEROUTES} from '../compoents/const/index'
 import UserPage from '../pages/UserPage/index'
 import ManagePager from "../pages/ManagerPage/index"
 import Loading from '../compoents/Loading/idnex';
@@ -45,9 +45,8 @@ function ManagerRoutes() {
 export default function PageRoutes() {
     //用户商城属性
     const [isUserLogin, setIsUserLogin] = React.useState(false)
-    const [userPageState, setUserPageState] = React.useState(PAGESTATE.userHome)
     const [messageApi, contextHolder] = message.useMessage();
-    let userState = { isUserLogin, setIsUserLogin, userPageState, setUserPageState,messageApi, contextHolder}
+    let userState = { isUserLogin, setIsUserLogin,messageApi, contextHolder}
     //TODO 管理系统属性
     return (
         <BrowserRouter>

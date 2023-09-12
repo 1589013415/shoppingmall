@@ -14,15 +14,6 @@ export const PAGEROUTES={
 }
 
 /**
- * 页面状态常量
- */
-export const PAGESTATE={
-    userHome:"userHome",
-    userLogin:"userLogin",
-    userRegister:"userRegister"
-}
-
-/**
  * token
  */
 export const TOKEN={
