@@ -135,10 +135,15 @@ public class UserLoginController {
         User existUser = userService.isExist(userName);
         if (existUser != null) {
             String verifyCode = mailUtil.verificationCode(existUser.getUserName());
-            mailUtil.sendMail(existUser.getEmail(), "你的验证码为：" + verifyCode + "。\n验证码邮箱期为5分钟");
-            resultMsg.setState(200);
-            resultMsg.setSuccess(true);
-            resultMsg.setMsg("验证码已发送至你注册的邮箱，注意查收");
+            if(mailUtil.sendMail(existUser.getEmail(), "你的验证码为：" + verifyCode + "。\n验证码邮箱期为5分钟")){
+                resultMsg.setState(200);
+                resultMsg.setSuccess(true);
+                resultMsg.setMsg("验证码已发送至你注册的邮箱，注意查收");
+            }else {
+                resultMsg.setState(0);
+                resultMsg.setMsg("后端服务器中心邮箱连接失败，请联系管理员，请检查中心邮箱是否授权");
+            };
+
         } else {
             resultMsg.setState(0);
             resultMsg.setMsg("获取验证码失败,请输入正确的账号");

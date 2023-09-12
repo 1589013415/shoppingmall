@@ -12,7 +12,7 @@ export default function UserLoginForm() {
   const { userState } = useContext(UserMyContext);
   const {isUserLogin}=userState
   const navigate = useNavigate()
-  let loginParm={userState,navigate,form}
+  let loginParm={userState,navigate,form,isLoginFalg, setIsLoginFalg}
   let onFinish=(formData)=>{
     isLoginFalg?Utils.OnFinishLogin({...loginParm,formData}):Utils.OnFinishReset({...loginParm,formData})
   }
@@ -37,7 +37,7 @@ export default function UserLoginForm() {
               name="basic"
               autoComplete="off"
           >  
-          {Utils.FormItem(isLoginFalg, setIsLoginFalg,form)}
+          {Utils.FormItem(loginParm)}
           </Form>
       </Card>
   )

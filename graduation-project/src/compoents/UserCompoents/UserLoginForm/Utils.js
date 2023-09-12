@@ -21,7 +21,8 @@ const bodyStyle = {
     background: 'rgba(20, 108, 232, 0.5)'
 }
 
-const FormItem = (isLoginFalg, setIsLoginFalg, form) => {
+const FormItem = (param) => {
+    const {isLoginFalg, setIsLoginFalg, form}=param
     let passwordInputRef = useRef();
     let verifyCOdeInput = useRef();
     return (
@@ -44,7 +45,7 @@ const FormItem = (isLoginFalg, setIsLoginFalg, form) => {
                 {isLoginFalg ? <Input placeholder='请输入你的账号' onPressEnter={() => OnPressEnterAccount(passwordInputRef)} />
                     : <Space>
                         <Input placeholder='请输入你的账号' onPressEnter={() => OnPressEnterAccount(verifyCOdeInput)} />
-                        {!isLoginFalg ? <Button onClick={() => GetVerify(form)}>获得验证码</Button> : null}
+                        {!isLoginFalg ? <Button onClick={() => GetVerify(param)}>获得验证码</Button> : null}
                     </Space>}
             </Form.Item>
             {!isLoginFalg ? <Form.Item
@@ -225,41 +226,33 @@ const OnPressEnterAccount = (inputRef) => {
 }
 
 
-const GetVerify = async (form) => {
+const GetVerify = async (param) => {
+    const {form,userState}=param
+    const {messageApi}=userState
     let userName = form.getFieldValue("username");
     if (userName === undefined) {
-        message.error({
+        messageApi.open({
+            type: 'warning',
             content: "请输入你的账号",
-            className: 'custom-class', style: {
-                marginTop: '20vh',
-                fontSize: "110%",
-                color: "red"
-            },
-        }, 0.8)
+        });
         return
     }
     await axios.get("/user/getverify/" + userName).then(
         response => {
-            if (response.data.success) {
-                message.warning({
-                    content: response.data.msg,
-                    className: 'custom-class', style: {
-                        marginTop: '20vh',
-                        fontSize: "110%"
-                    },
-                }, 2)
+            const {success,msg}=response.data
+            if (success) {
+                messageApi.open({
+                    type: 'success',
+                    content: msg,
+                });
             } else {
-                message.error({
-                    content: response.data.msg,
-                    className: 'custom-class', style: {
-                        marginTop: '20vh',
-                        fontSize: "110%",
-                        color: "red"
-                    },
-                }, 0.8)
+                messageApi.open({
+                    type: 'error',
+                    content: msg,
+                });
             }
         },
-    ).catch(error => message.error(error.message))
+    ).catch(error =>messageApi.open({type: 'error',content: error.message}))
 }
 
 export const Utils = {
