@@ -1,0 +1,10 @@
+.UserPageHeaderDiv {
+    background: #0a3f89;
+    height: 75px
+}
+
+.UserPageContent {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh
+}

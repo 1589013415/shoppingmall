@@ -1,5 +1,5 @@
 .userRegisterBackground {
-    height: 100vh;
+    flex-grow: 1;
     width: 100%;
     background-image: url(/public/images/loginAndRegister.webp);
     background-size: cover;
@@ -8,10 +8,10 @@
 }
 
 .useRegisterDivLeft{
-    margin-top: 50%;
+    margin-top: 150px;
 }
 .userRegisterDivRight{
-    margin-top: 30%;
+    margin-top: 120px;
 }
 .userRegisterSpanText {
     color: rgb(13, 131, 235);

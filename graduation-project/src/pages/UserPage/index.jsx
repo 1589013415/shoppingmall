@@ -1,18 +1,20 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
 
-import { Layout} from 'antd';
-import UserHeader from '../../compoents/UserCompoents/UserHeader';
+import { Layout } from 'antd';
 
-const { Header,Content } = Layout;
+import UserHeader from '../../compoents/UserCompoents/UserHeader';
+import "./index.css"
+
+const { Header, Content } = Layout;
 
 
 function UserPage() {
   return (
     <Layout>
-      <Header style={{ background: '#0a3f89', height: '75px' }} ><UserHeader /></Header>
-      <Content>
-        <Outlet/>
+      <Header className='UserPageHeaderDiv' ><UserHeader /></Header>
+      <Content className='UserPageContent'>
+        <Outlet />
       </Content>
     </Layout>
   )

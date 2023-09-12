@@ -1,5 +1,5 @@
 .userLoginBackground {
-    height: 100vh;
+    flex-grow: 1;
     width: 100%;
     background-image:  url(/public/images/loginAndRegister.webp);
     background-size: cover;
@@ -8,10 +8,10 @@
 }
 
 .userLoginDivLeft{
-    margin-top: 50%;
+    margin-top: 150px;
 }
 .userLoginDivRight{
-    margin-top: 30%;
+    margin-top: 120px;
 }
 .userLoginSpanText {
     color: rgb(13, 131, 235);

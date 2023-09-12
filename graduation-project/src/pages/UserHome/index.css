@@ -1,5 +1,5 @@
 .userHomeDiv{
-    height: 100vh;
+    flex-grow: 1;
     width: 100%;
     background-image:  url(/public/images/usreHome.webp);
     background-size: cover;
