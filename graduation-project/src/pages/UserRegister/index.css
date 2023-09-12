@@ -1,22 +1,21 @@
-.userLoginBackground {
+.userRegisterBackground {
     height: 100vh;
     width: 100%;
-    background-image:  url(/public/images/loginAndRegister.webp);
+    background-image: url(/public/images/loginAndRegister.webp);
     background-size: cover;
     background-repeat: no-repeat;
     background-attachment: fixed;
 }
 
-.userLoginDivLeft{
+.useRegisterDivLeft{
     margin-top: 50%;
 }
-.userLoginDivRight{
+.userRegisterDivRight{
     margin-top: 30%;
 }
-.userLoginSpanText {
+.userRegisterSpanText {
     color: rgb(13, 131, 235);
     font-size: 400%;
     font-family: "华文琥珀";
-    margin-left: -20%;
+    margin-left: -16%;
 }
-

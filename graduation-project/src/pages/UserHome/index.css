@@ -1,0 +1,8 @@
+.userHomeDiv{
+    height: 100vh;
+    width: 100%;
+    background-image:  url(/public/images/usreHome.webp);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
